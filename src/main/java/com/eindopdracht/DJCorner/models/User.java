@@ -2,6 +2,9 @@ package com.eindopdracht.DJCorner.models;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -12,7 +15,7 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String userName;
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -21,24 +24,21 @@ public class User {
     private String password;
 
 
-    public User() { }
-
-    public User(String userName, String email, String password) {
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-    }
 
     public Long getId() {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {

@@ -7,13 +7,18 @@ import com.eindopdracht.DJCorner.models.User;
 public class UserMapper {
 
     public static User toEntity(UserRequestDto userRequestDto) {
-        User user = new User(userRequestDto.userName, userRequestDto.email, userRequestDto.password);
+        User user = new User();
+        user.setUsername(userRequestDto.getUsername());
+        user.setEmail(userRequestDto.getEmail());
+        user.setPassword(userRequestDto.getPassword());
+
         return user;
     }
 
     public static UserResponseDto toResponseDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.userName = user.getUserName();
+        userResponseDto.id = user.getId();
+        userResponseDto.username = user.getUsername();
         userResponseDto.email = user.getEmail();
         userResponseDto.password = user.getPassword();
         return userResponseDto;

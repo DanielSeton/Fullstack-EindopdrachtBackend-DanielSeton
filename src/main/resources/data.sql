@@ -1,0 +1,1 @@
+INSERT INTO users (email, password, username) VALUES ('AnnieV@live.nl', 'HE3e9*d1L3w', 'AnnieJammie'),('SjaakieHardga@gmail.com','wachtwoord123','Noisemaker20'),('Hardcoreharry@gmail.com','Utrecht305','HardcoreHarry')
