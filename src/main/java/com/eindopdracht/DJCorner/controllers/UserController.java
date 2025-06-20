@@ -3,13 +3,13 @@ package com.eindopdracht.DJCorner.controllers;
 
 import com.eindopdracht.DJCorner.dtos.UserRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserResponseDto;
+import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.UserMapper;
 import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -46,10 +46,7 @@ public class UserController {
         User user = this.userService.createUser(userRequestDto);
         UserResponseDto userResponseDto = UserMapper.toResponseDto(user);
 
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/" + user.getId()).toUriString());
+        URI uri = UriHelper.buildResourceUri(user.getId());
 
         return ResponseEntity.created(uri).body(userResponseDto);
     }

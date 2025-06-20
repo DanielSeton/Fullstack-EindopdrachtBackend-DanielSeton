@@ -2,7 +2,9 @@ package com.eindopdracht.DJCorner.models;
 
 import jakarta.persistence.*;
 
-import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "submissions")
@@ -13,18 +15,22 @@ public class Submission {
     private Long id;
     private String title;
     private String artistName;
+    private LocalDate uploadDate;
     private Integer bpm;
-    private File musicFile;
 
+    @Lob
+    private byte[] musicFile;
 
-    public Submission() { }
+    private String musicFileName;
+    private String musicFileType;
 
-    public Submission(String title, String artistName, Integer bpm, File musicFile) {
-        this.title = title;
-        this.artistName = artistName;
-        this.bpm = bpm;
-        this.musicFile = musicFile;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "submission_tags",
+            joinColumns = @JoinColumn(name = "submission_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -50,6 +56,14 @@ public class Submission {
         this.artistName = artistName;
     }
 
+    public LocalDate getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(LocalDate uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
     public Integer getBpm() {
         return bpm;
     }
@@ -58,11 +72,35 @@ public class Submission {
         this.bpm = bpm;
     }
 
-    public File getMusicFile() {
+    public byte[] getMusicFile() {
         return musicFile;
     }
 
-    public void setMusicFile(File musicFile) {
+    public void setMusicFile(byte[] musicFile) {
         this.musicFile = musicFile;
+    }
+
+    public String getMusicFileName() {
+        return musicFileName;
+    }
+
+    public void setMusicFileName(String musicFileName) {
+        this.musicFileName = musicFileName;
+    }
+
+    public String getMusicFileType() {
+        return musicFileType;
+    }
+
+    public void setMusicFileType(String musicFileType) {
+        this.musicFileType = musicFileType;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }
