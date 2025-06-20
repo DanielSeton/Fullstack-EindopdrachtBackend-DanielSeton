@@ -41,17 +41,17 @@ public class SubmissionController {
 
 
 
-    @PostMapping
-    public ResponseEntity<Submission> createSubmission(@RequestBody Submission submission) {
-        this.submissionRepository.save(submission);
-
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/" + submission.getId()).toUriString());
-
-        return ResponseEntity.created(uri).body(submission);
-    }
+//    @PostMapping
+//    public ResponseEntity<Submission> createSubmission(@RequestBody Submission submission) {
+//        this.submissionRepository.save(submission);
+//
+////        URI uri = URI.create(
+////                ServletUriComponentsBuilder
+////                        .fromCurrentRequest()
+////                        .path("/" + submission.getId()).toUriString());
+//
+//        return ResponseEntity.created(uri).body(submission);
+//    }
 
 
 

@@ -1,10 +1,13 @@
 package com.eindopdracht.DJCorner.dtos;
 
+import com.eindopdracht.DJCorner.enums.Role;
+
 public class UserResponseDto {
     public Long id;
     public String username;
     public String email;
     public String password;
+    public Role role;
 
     public Long getId() {
         return id;
@@ -36,5 +39,13 @@ public class UserResponseDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

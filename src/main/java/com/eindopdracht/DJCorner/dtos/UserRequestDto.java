@@ -1,6 +1,7 @@
 package com.eindopdracht.DJCorner.dtos;
 
 
+import com.eindopdracht.DJCorner.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,8 @@ public class UserRequestDto {
     @NotBlank
     @Size(min = 6, max = 25)
     public String password;
+
+    public Role role;
 
     public String getUsername() {
         return username;
@@ -40,5 +43,13 @@ public class UserRequestDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
