@@ -12,6 +12,9 @@ public class Feedback {
     private String feedback;
     private String status;
 
+    @OneToOne(mappedBy = "feedback")
+    private Submission submission;
+
     public Feedback() { }
 
     public Feedback(String feedback) {
@@ -37,4 +40,6 @@ public class Feedback {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }

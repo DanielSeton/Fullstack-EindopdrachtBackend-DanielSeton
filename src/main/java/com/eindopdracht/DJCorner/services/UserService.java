@@ -62,9 +62,9 @@ public class UserService {
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(userRequestDto.getPassword());
 
-        User UpdatedUser = this.userRepository.save(user);
+        User updatedUser = this.userRepository.save(user);
 
-        return UserMapper.toResponseDto(UpdatedUser);
+        return UserMapper.toResponseDto(updatedUser);
 
     }
 

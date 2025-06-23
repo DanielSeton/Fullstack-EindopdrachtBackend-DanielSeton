@@ -1,52 +1,36 @@
-package com.eindopdracht.DJCorner.models;
+package com.eindopdracht.DJCorner.dtos;
 
-import jakarta.persistence.*;
+import com.eindopdracht.DJCorner.models.Feedback;
+import com.eindopdracht.DJCorner.models.Tag;
+import com.eindopdracht.DJCorner.models.User;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "submissions")
-public class Submission {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class SubmissionRequestDto {
+    @NotBlank
     private String title;
     private String artistName;
     private LocalDate uploadDate;
     private Integer bpm;
 
-    @Lob
+    @NotEmpty
     private byte[] musicFile;
 
     private String musicFileName;
     private String musicFileType;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "feedback")
     private Feedback feedback;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @NotEmpty
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "submission_tags",
-            joinColumns = @JoinColumn(name = "submission_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
+    @NotEmpty
     private List<Tag> tags = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -104,14 +88,6 @@ public class Submission {
         this.musicFileType = musicFileType;
     }
 
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public Feedback getFeedback() {
         return feedback;
     }
@@ -126,5 +102,13 @@ public class Submission {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }
