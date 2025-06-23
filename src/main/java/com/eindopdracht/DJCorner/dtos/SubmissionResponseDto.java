@@ -1,44 +1,23 @@
-package com.eindopdracht.DJCorner.models;
+package com.eindopdracht.DJCorner.dtos;
 
-import jakarta.persistence.*;
+import com.eindopdracht.DJCorner.models.Feedback;
+import com.eindopdracht.DJCorner.models.Tag;
+import com.eindopdracht.DJCorner.models.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "submissions")
-public class Submission {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SubmissionResponseDto {
     private Long id;
     private String title;
     private String artistName;
     private LocalDate uploadDate;
     private Integer bpm;
-
-    @Lob
-    private byte[] musicFile;
-
     private String musicFileName;
     private String musicFileType;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "feedback")
-    private Feedback feedback;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToMany
-    @JoinTable(
-            name = "submission_tags",
-            joinColumns = @JoinColumn(name = "submission_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags = new ArrayList<>();
+    private List<String> tags; // alleen tag-namen
+    private String feedbackSummary;
+    private String audioDownloadUrl;
 
     public Long getId() {
         return id;
@@ -80,14 +59,6 @@ public class Submission {
         this.bpm = bpm;
     }
 
-    public byte[] getMusicFile() {
-        return musicFile;
-    }
-
-    public void setMusicFile(byte[] musicFile) {
-        this.musicFile = musicFile;
-    }
-
     public String getMusicFileName() {
         return musicFileName;
     }
@@ -104,27 +75,27 @@ public class Submission {
         this.musicFileType = musicFileType;
     }
 
-    public List<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
-    public Feedback getFeedback() {
-        return feedback;
+    public String getFeedbackSummary() {
+        return feedbackSummary;
     }
 
-    public void setFeedback(Feedback feedback) {
-        this.feedback = feedback;
+    public void setFeedbackSummary(String feedbackSummary) {
+        this.feedbackSummary = feedbackSummary;
     }
 
-    public User getUser() {
-        return user;
+    public String getAudioDownloadUrl() {
+        return audioDownloadUrl;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAudioDownloadUrl(String audioDownloadUrl) {
+        this.audioDownloadUrl = audioDownloadUrl;
     }
 }

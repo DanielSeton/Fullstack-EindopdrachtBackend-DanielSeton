@@ -1,120 +1,92 @@
 package com.eindopdracht.DJCorner.controllers;
 
 
+import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
+import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
+import com.eindopdracht.DJCorner.helpers.UriHelper;
+import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
-import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
-import org.springframework.http.ResponseEntity;
+import com.eindopdracht.DJCorner.services.SubmissionService;
+import jakarta.validation.Valid;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.io.File;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/submissions")
 public class SubmissionController {
 
-    private final SubmissionRepository submissionRepository;
+    private final SubmissionService submissionService;
 
-    public SubmissionController(SubmissionRepository submissionRepository) {
-        this.submissionRepository = submissionRepository;
+    public SubmissionController(SubmissionService submissionService) {
+        this.submissionService = submissionService;
     }
 
 
     @GetMapping
-    public ResponseEntity<List<Submission>> getSubmissions() {
-        return ResponseEntity.ok(submissionRepository.findAll());
+    public ResponseEntity<List<SubmissionResponseDto>> getAllSubmissions() {
+        return ResponseEntity.ok(submissionService.getAllSubmissions());
+    }
+
+    @GetMapping("/{id}/audio")
+    public ResponseEntity<byte[]> getAudioFile(@PathVariable Long id) {
+        Submission submission = submissionService.getSingleSubmission(id);
+
+        byte[] audioFile = submission.getMusicFile();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(submission.getMusicFileType()));
+        headers.setContentDisposition(ContentDisposition.inline()
+                .filename(submission.getMusicFileName())
+                .build());
+
+        return new ResponseEntity<>(audioFile, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Submission> getSubmission(@PathVariable Long id) {
-        Optional<Submission> submission = submissionRepository.findById(id);
-
-        if (submission.isPresent()) {
-            return ResponseEntity.ok(submission.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<SubmissionResponseDto> getSubmissionById(@PathVariable Long id) {
+        return ResponseEntity.ok(SubmissionMapper.toSubmissionResponseDto(this.submissionService.getSingleSubmission(id)));
     }
 
 
 
     @PostMapping
-    public ResponseEntity<Submission> createSubmission(@RequestBody Submission submission) {
-        this.submissionRepository.save(submission);
+    public ResponseEntity<SubmissionResponseDto> createSubmission(@Valid @RequestBody SubmissionRequestDto submissionRequestDto) {
+        Submission submission = this.submissionService.createSubmission(submissionRequestDto);
+        SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
 
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentRequest()
-                        .path("/" + submission.getId()).toUriString());
+        URI uri = UriHelper.buildResourceUri(submission.getId());
 
-        return ResponseEntity.created(uri).body(submission);
+        return ResponseEntity.created(uri).body(submissionResponseDto);
     }
 
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Submission> deleteSubmission(@PathVariable Long id) {
-        Optional<Submission> submission = submissionRepository.findById(id);
+    public ResponseEntity<Object> deleteSubmission(@PathVariable Long id) {
 
-        if (submission.isPresent()) {
-            submissionRepository.deleteById(id);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        submissionService.deleteSingleSubmission(id);
+
         return ResponseEntity.noContent().build();
     }
 
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Submission> updateSubmission(@PathVariable Long id, @RequestBody Submission newSubmission) {
-        Optional<Submission> submission = submissionRepository.findById(id);
+    public ResponseEntity<SubmissionResponseDto> updateSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
 
-        if (submission.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
 
-        } else {
-            Submission submission1 = submission.get();
-
-            submission1.setTitle(newSubmission.getTitle());
-            submission1.setArtistName(newSubmission.getArtistName());
-            submission1.setBpm(newSubmission.getBpm());
-            submission1.setMusicFile(newSubmission.getMusicFile());
-
-            Submission returnSubmission = submissionRepository.save(submission1);
-
-            return ResponseEntity.ok().body(returnSubmission);
-        }
+        return ResponseEntity.ok(updatedSubmission);
     }
 
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Submission> patchSubmission(@PathVariable Long id, @RequestBody Submission newSubmission) {
-        Optional<Submission> submission = submissionRepository.findById(id);
-
-        if (submission.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Submission submission1 = submission.get();
-            if (newSubmission.getTitle() != null) {
-                submission1.setTitle(newSubmission.getTitle());
-            }
-            if (newSubmission.getArtistName() != null) {
-                submission1.setArtistName(newSubmission.getArtistName());
-            }
-            if (newSubmission.getBpm() != null) {
-                submission1.setBpm(newSubmission.getBpm());
-            }
-            if (newSubmission.getMusicFile() != null) {
-                submission1.setMusicFile(newSubmission.getMusicFile());
-            }
-
-            Submission returnSubmission = submissionRepository.save(submission1);
-            return ResponseEntity.ok().body(returnSubmission);
-        }
+    public ResponseEntity<SubmissionResponseDto> patchSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
+        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
+        return ResponseEntity.ok(updatedSubmission);
     }
 }
