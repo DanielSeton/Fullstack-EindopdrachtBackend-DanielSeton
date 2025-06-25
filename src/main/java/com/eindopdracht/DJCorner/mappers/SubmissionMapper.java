@@ -2,6 +2,8 @@ package com.eindopdracht.DJCorner.mappers;
 
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
+import com.eindopdracht.DJCorner.enums.Status;
+import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.models.Tag;
 
@@ -17,7 +19,11 @@ public class SubmissionMapper {
         submission.setMusicFile(submissionRequestDto.getMusicFile());
         submission.setMusicFileName(submissionRequestDto.getMusicFileName());
         submission.setMusicFileType(submissionRequestDto.getMusicFileType());
-        submission.setFeedback(submissionRequestDto.getFeedback());
+
+        Feedback feedback = new Feedback();
+        feedback.setStatus(Status.NO_FEEDBACK);
+        submission.setFeedback(feedback);
+
         submission.setUser(submissionRequestDto.getUser());
         submission.setTags(submissionRequestDto.getTags());
 
@@ -41,7 +47,21 @@ public class SubmissionMapper {
                         .toList()
         );
 
-        submissionResponseDto.setFeedbackSummary(null);
+        Feedback feedback = submission.getFeedback();
+        if (feedback != null) {
+            submissionResponseDto.setFeedbackId(
+                    submission.getFeedback() != null ? submission.getFeedback().getId() : null
+            );
+            submissionResponseDto.setFeedbackStatus(
+                    feedback.getStatus() != null ? feedback.getStatus().name() : null
+            );
+            submissionResponseDto.setFeedbackText(
+                    feedback.getFeedback() != null ? feedback.getFeedback() : ""
+            );
+        } else {
+            submissionResponseDto.setFeedbackStatus("NO_FEEDBACK");
+            submissionResponseDto.setFeedbackText("");
+        }
 
         submissionResponseDto.setAudioDownloadUrl("submissions/" + submission.getId() + "/audio");
 
