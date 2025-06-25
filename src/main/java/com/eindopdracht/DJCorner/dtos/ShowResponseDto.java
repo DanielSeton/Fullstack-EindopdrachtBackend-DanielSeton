@@ -1,25 +1,21 @@
-package com.eindopdracht.DJCorner.models;
-
-import jakarta.persistence.*;
+package com.eindopdracht.DJCorner.dtos;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "shows")
-public class Show {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String location;
-    private LocalDate date;
-    private String website;
-    private String ticketSite;
-
+public class ShowResponseDto {
+    public Long id;
+    public String name;
+    public String location;
+    public LocalDate date;
+    public String website;
+    public String ticketSite;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

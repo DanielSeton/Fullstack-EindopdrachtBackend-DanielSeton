@@ -35,14 +35,14 @@ public class FeedbackService {
         return feedbackResponseDtoList;
     }
 
-    public Feedback updateFeedback(Long feedbackId, FeedbackRequestDto feedbackRequestDto) {
-        Feedback feedback = feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("Object with id: " + feedbackId + " not found"));
-
-        feedback.setFeedback(feedbackRequestDto.getFeedback());
-        feedback.setStatus(feedbackRequestDto.getStatus());
-
-        Feedback updatedFeedback = feedbackRepository.save(feedback);
-        return FeedbackMapper.toFeedbackResponseDto(updatedFeedback);
-    }
+//    public Feedback updateFeedback(Long feedbackId, FeedbackRequestDto feedbackRequestDto) {
+//        Feedback feedback = feedbackRepository.findById(feedbackId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Object with id: " + feedbackId + " not found"));
+//
+//        feedback.setFeedback(feedbackRequestDto.getFeedback());
+//        feedback.setStatus(feedbackRequestDto.getStatus());
+//
+//        Feedback updatedFeedback = feedbackRepository.save(feedback);
+//        return FeedbackMapper.toFeedbackResponseDto(updatedFeedback);
+//    }
 }

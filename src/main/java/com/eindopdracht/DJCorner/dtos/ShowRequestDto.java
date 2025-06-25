@@ -1,26 +1,20 @@
-package com.eindopdracht.DJCorner.models;
+package com.eindopdracht.DJCorner.dtos;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "shows")
-public class Show {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ShowRequestDto {
+    @NotBlank
     private String name;
+    @NotBlank
     private String location;
+    @NotEmpty
     private LocalDate date;
+    @NotBlank
     private String website;
     private String ticketSite;
-
-
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

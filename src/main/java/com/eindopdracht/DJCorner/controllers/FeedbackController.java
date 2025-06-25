@@ -35,12 +35,12 @@ public class FeedbackController {
 //        }
 //    }
 
-    @PutMapping("/{feedbackId}")
-    public ResponseEntity<FeedbackResponseDto> updateFeedback(@PathVariable Long feedbackId, @Valid @RequestBody FeedbackRequestDto feedbackRequestDto) {
-        FeedbackResponseDto updatedFeedback = feedbackService.updateFeedback(feedbackId, feedbackRequestDto);
-
-        return ResponseEntity.ok(updatedFeedback);
-    }
+//    @PutMapping("/{feedbackId}")
+//    public ResponseEntity<FeedbackResponseDto> updateFeedback(@PathVariable Long feedbackId, @Valid @RequestBody FeedbackRequestDto feedbackRequestDto) {
+//        FeedbackResponseDto updatedFeedback = feedbackService.updateFeedback(feedbackId, feedbackRequestDto);
+//
+//        return ResponseEntity.ok(updatedFeedback);
+//    }
 
 
 
