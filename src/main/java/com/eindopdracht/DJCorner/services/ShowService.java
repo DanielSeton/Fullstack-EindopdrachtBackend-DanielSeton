@@ -50,4 +50,41 @@ public class ShowService {
 
         showRepository.deleteById(id);
     }
+
+    public ShowResponseDto updateShow(Long id, ShowRequestDto showRequestDto) {
+        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+
+        show.setName(showRequestDto.getName());
+        show.setLocation(showRequestDto.getLocation());
+        show.setDate(showRequestDto.getDate());
+        show.setWebsite(showRequestDto.getWebsite());
+        show.setTicketSite(showRequestDto.getTicketSite());
+
+        Show updatedShow = this.showRepository.save(show);
+
+        return ShowMapper.toResponseDto(updatedShow);
+    }
+
+    public ShowResponseDto patchShow(Long id, ShowRequestDto showRequestDto) {
+        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+
+        if (showRequestDto.getName() != null) {
+            show.setName(showRequestDto.getName());
+        }
+        if (showRequestDto.getLocation() != null) {
+            show.setLocation(showRequestDto.getLocation());
+        }
+        if (showRequestDto.getDate() != null) {
+            show.setDate(showRequestDto.getDate());
+        }
+        if (showRequestDto.getWebsite() != null) {
+            show.setWebsite(showRequestDto.getWebsite());
+        }
+        if (showRequestDto.getTicketSite() != null) {
+            show.setTicketSite(showRequestDto.getTicketSite());
+        }
+
+        Show returnShow = showRepository.save(show);
+        return ShowMapper.toResponseDto(returnShow);
+    }
 }

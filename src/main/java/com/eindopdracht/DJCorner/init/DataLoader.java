@@ -34,7 +34,7 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         loadSubmission("test_track.mp3", "Demo Track", 128, 1L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Demo Track", 128, 2L, List.of("Emo", "EDM"));
+        loadSubmission("test_track.mp3", "Demo Track", 128, 2L, List.of("Dubstep", "EDM"));
 
     }
 

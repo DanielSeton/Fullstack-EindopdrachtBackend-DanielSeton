@@ -55,4 +55,19 @@ public class ShowController {
 
         return ResponseEntity.noContent().build();
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ShowResponseDto> updateShow(@PathVariable Long id, @Valid @RequestBody ShowRequestDto showRequestDto) {
+        ShowResponseDto showResponseDto = showService.updateShow(id, showRequestDto);
+
+        return ResponseEntity.ok(showResponseDto);
+    }
+
+    @PatchMapping
+    public ResponseEntity<ShowResponseDto> patchShow (@PathVariable Long id, @Valid @RequestBody ShowRequestDto showRequestDto) {
+        ShowResponseDto updatedShow = showService.patchShow(id, showRequestDto);
+
+        return ResponseEntity.ok(updatedShow);
+    }
 }
