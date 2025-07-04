@@ -1,9 +1,11 @@
 package com.eindopdracht.DJCorner.services;
 
+import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
+import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
 import org.springframework.stereotype.Service;
@@ -67,6 +69,27 @@ public class SubmissionService {
 
         Submission updatedSubmission = this.submissionRepository.save(submission);
 
+        return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
+    }
+
+    public SubmissionResponseDto updateFeedback(Long submissionId, FeedbackUpdateDto feedbackUpdateDto){
+        Submission submission = submissionRepository.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + submissionId + " not found"));
+
+        Feedback feedback = submission.getFeedback();
+        if (feedback == null) {
+            feedback = new Feedback();
+            submission.setFeedback(feedback);
+        }
+
+        if (feedbackUpdateDto.getFeedback() != null) {
+            feedback.setFeedback(feedbackUpdateDto.getFeedback());
+        }
+
+        if (feedbackUpdateDto.getStatus() != null) {
+            feedback.setStatus(feedbackUpdateDto.getStatus());
+        }
+
+        Submission updatedSubmission = submissionRepository.save(submission);
         return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
     }
 }

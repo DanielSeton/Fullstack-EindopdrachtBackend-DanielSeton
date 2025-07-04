@@ -25,7 +25,7 @@ public class Submission {
     private String musicFileType;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "feedback")
+    @JoinColumn(name = "feedback_id")
     private Feedback feedback;
 
     @ManyToOne
