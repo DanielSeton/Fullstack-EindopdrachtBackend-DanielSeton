@@ -28,7 +28,7 @@ public class SubmissionService {
     }
 
     public Submission getSingleSubmission(Long id) {
-        return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
     }
 
     public List<SubmissionResponseDto> getAllSubmissions() {
@@ -46,14 +46,14 @@ public class SubmissionService {
         Optional<Submission> submissionOptional = this.submissionRepository.findById(id);
 
         if (submissionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Object with id: " + id + " not found");
+            throw new ResourceNotFoundException("Submission with id: " + id + " not found");
         }
 
         submissionRepository.deleteById(id);
     }
 
     public SubmissionResponseDto updateSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
-        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
         SubmissionMapper.updateEntity(submission, submissionRequestDto);
 
@@ -63,7 +63,7 @@ public class SubmissionService {
     }
 
     public SubmissionResponseDto patchSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
-        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
         SubmissionMapper.patchEntity(submission, submissionRequestDto);
 

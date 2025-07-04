@@ -38,21 +38,21 @@ public class ShowService {
     }
 
     public Show getSingleShow(Long id) {
-        return this.showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        return this.showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Show with id: " + id + " not found"));
     }
 
     public void deleteShow(Long id) {
         Optional<Show> showOptional = this.showRepository.findById(id);
 
         if (showOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Object with id: " + id + " not found");
+            throw new ResourceNotFoundException("Show with id: " + id + " not found");
         }
 
         showRepository.deleteById(id);
     }
 
     public ShowResponseDto updateShow(Long id, ShowRequestDto showRequestDto) {
-        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Show with id: " + id + " not found"));
 
         show.setName(showRequestDto.getName());
         show.setLocation(showRequestDto.getLocation());
@@ -66,7 +66,7 @@ public class ShowService {
     }
 
     public ShowResponseDto patchShow(Long id, ShowRequestDto showRequestDto) {
-        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Show with id: " + id + " not found"));
 
         if (showRequestDto.getName() != null) {
             show.setName(showRequestDto.getName());
