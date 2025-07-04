@@ -15,8 +15,10 @@ public class SubmissionResponseDto {
     private Integer bpm;
     private String musicFileName;
     private String musicFileType;
-    private List<String> tags; // alleen tag-namen
-    private String feedbackSummary;
+    private List<String> tags;
+    private Long feedbackId;
+    private String feedbackStatus;
+    private String feedbackText;
     private String audioDownloadUrl;
 
     public Long getId() {
@@ -83,12 +85,28 @@ public class SubmissionResponseDto {
         this.tags = tags;
     }
 
-    public String getFeedbackSummary() {
-        return feedbackSummary;
+    public Long getFeedbackId() {
+        return feedbackId;
     }
 
-    public void setFeedbackSummary(String feedbackSummary) {
-        this.feedbackSummary = feedbackSummary;
+    public void setFeedbackId(Long feedbackId) {
+        this.feedbackId = feedbackId;
+    }
+
+    public String getFeedbackStatus() {
+        return feedbackStatus;
+    }
+
+    public void setFeedbackStatus(String feedbackStatus) {
+        this.feedbackStatus = feedbackStatus;
+    }
+
+    public String getFeedbackText() {
+        return feedbackText;
+    }
+
+    public void setFeedbackText(String feedbackText) {
+        this.feedbackText = feedbackText;
     }
 
     public String getAudioDownloadUrl() {

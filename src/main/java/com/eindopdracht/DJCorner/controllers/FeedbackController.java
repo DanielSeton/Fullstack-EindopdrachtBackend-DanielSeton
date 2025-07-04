@@ -1,7 +1,13 @@
 package com.eindopdracht.DJCorner.controllers;
 
+import com.eindopdracht.DJCorner.dtos.FeedbackRequestDto;
+import com.eindopdracht.DJCorner.dtos.FeedbackResponseDto;
 import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.repositories.FeedbackRepository;
+import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
+import com.eindopdracht.DJCorner.services.FeedbackService;
+import com.eindopdracht.DJCorner.services.SubmissionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,11 +17,12 @@ import java.util.Optional;
 @RequestMapping("feedback")
 public class FeedbackController {
 
-    private final FeedbackRepository feedbackRepository;
+    private final FeedbackService feedbackService;
 
-    public FeedbackController(FeedbackRepository feedbackRepository) {
-        this.feedbackRepository = feedbackRepository;
+    public FeedbackController(FeedbackService feedbackService, SubmissionService submissionService) {
+        this.feedbackService = feedbackService;
     }
+
 
 //    @GetMapping("/{id}")
 //    public ResponseEntity<Feedback> getFeedback(@PathVariable Long id) {
@@ -28,12 +35,12 @@ public class FeedbackController {
 //        }
 //    }
 
-
-
-    @PostMapping
-    public ResponseEntity<Feedback> createShow(@RequestBody Feedback feedback) {
-        return ResponseEntity.ok(this.feedbackRepository.save(feedback));
-    }
+//    @PutMapping("/{feedbackId}")
+//    public ResponseEntity<FeedbackResponseDto> updateFeedback(@PathVariable Long feedbackId, @Valid @RequestBody FeedbackRequestDto feedbackRequestDto) {
+//        FeedbackResponseDto updatedFeedback = feedbackService.updateFeedback(feedbackId, feedbackRequestDto);
+//
+//        return ResponseEntity.ok(updatedFeedback);
+//    }
 
 
 

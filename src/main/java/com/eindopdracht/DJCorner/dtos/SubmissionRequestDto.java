@@ -1,6 +1,5 @@
 package com.eindopdracht.DJCorner.dtos;
 
-import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Tag;
 import com.eindopdracht.DJCorner.models.User;
 import jakarta.validation.constraints.NotBlank;
@@ -22,8 +21,6 @@ public class SubmissionRequestDto {
 
     private String musicFileName;
     private String musicFileType;
-
-    private Feedback feedback;
 
     @NotEmpty
     private User user;
@@ -86,14 +83,6 @@ public class SubmissionRequestDto {
 
     public void setMusicFileType(String musicFileType) {
         this.musicFileType = musicFileType;
-    }
-
-    public Feedback getFeedback() {
-        return feedback;
-    }
-
-    public void setFeedback(Feedback feedback) {
-        this.feedback = feedback;
     }
 
     public User getUser() {

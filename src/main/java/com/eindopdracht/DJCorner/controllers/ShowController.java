@@ -1,10 +1,17 @@
 package com.eindopdracht.DJCorner.controllers;
 
+import com.eindopdracht.DJCorner.dtos.ShowRequestDto;
+import com.eindopdracht.DJCorner.dtos.ShowResponseDto;
+import com.eindopdracht.DJCorner.helpers.UriHelper;
+import com.eindopdracht.DJCorner.mappers.ShowMapper;
 import com.eindopdracht.DJCorner.models.Show;
 import com.eindopdracht.DJCorner.repositories.ShowRepository;
+import com.eindopdracht.DJCorner.services.ShowService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -13,112 +20,54 @@ import java.util.Optional;
 @RequestMapping("/shows")
 public class ShowController {
 
-    private final ShowRepository showRepository;
+    private final ShowService showService;
 
-    public ShowController(ShowRepository showRepository) {
-        this.showRepository = showRepository;
+    public ShowController(ShowService showService) {
+        this.showService = showService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Show>> getAllShows() {
-        return ResponseEntity.ok(this.showRepository.findAll());
+    public ResponseEntity<List<ShowResponseDto>> getAllShows() {
+        return ResponseEntity.ok(showService.getAllShows());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Show> getShowById(@PathVariable Long id) {
-        Optional<Show> show = showRepository.findById(id);
-
-        if (show.isPresent()) {
-            return ResponseEntity.ok(show.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ShowResponseDto> getShowById(@PathVariable Long id) {
+        return ResponseEntity.ok(ShowMapper.toResponseDto(this.showService.getSingleShow(id)));
     }
-
-    @GetMapping("/before")
-    public ResponseEntity<List<Show>> getShowsBefore(@RequestParam LocalDate date) {
-        return ResponseEntity.ok(this.showRepository.findByDateBefore(date));
-    }
-
-    @GetMapping("/after")
-    public ResponseEntity<List<Show>> getShowsAfter(@RequestParam LocalDate date) {
-        return ResponseEntity.ok(this.showRepository.findByDateAfter(date));
-    }
-
 
 
     @PostMapping
-    public ResponseEntity<Show> createShow(@RequestBody Show show) {
-        return ResponseEntity.ok(this.showRepository.save(show));
+    public ResponseEntity<ShowResponseDto> createShow(@Valid @RequestBody ShowRequestDto showRequestDto) {
+        Show show = this.showService.createShow(showRequestDto);
+        ShowResponseDto showResponseDto = ShowMapper.toResponseDto(show);
+
+        URI uri = UriHelper.buildResourceUri(show.getId());
+
+        return ResponseEntity.created(uri).body(showResponseDto);
     }
 
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Show> deleteShow(@PathVariable Long id) {
-        Optional<Show> show = showRepository.findById(id);
+    public ResponseEntity<Object> deleteShow(@PathVariable Long id) {
+        showService.deleteShow(id);
 
-        if (show.isPresent()){
-            this.showRepository.delete(show.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
-
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Show> updateShow(@PathVariable Long id, @RequestBody Show newShow) {
-        Optional<Show> show = showRepository.findById(id);
+    public ResponseEntity<ShowResponseDto> updateShow(@PathVariable Long id, @Valid @RequestBody ShowRequestDto showRequestDto) {
+        ShowResponseDto showResponseDto = showService.updateShow(id, showRequestDto);
 
-        if (show.isEmpty()) {
-            return ResponseEntity.notFound().build();
-
-        } else {
-            Show show1 = show.get();
-
-            show1.setName(newShow.getName());
-            show1.setLocation(newShow.getLocation());
-            show1.setDate(newShow.getDate());
-            show1.setWebsite(newShow.getWebsite());
-            show1.setTicketSite(newShow.getTicketSite());
-
-            Show returnShow = showRepository.save(show1);
-
-            return ResponseEntity.ok().body(returnShow);
-        }
+        return ResponseEntity.ok(showResponseDto);
     }
 
+    @PatchMapping
+    public ResponseEntity<ShowResponseDto> patchShow (@PathVariable Long id, @Valid @RequestBody ShowRequestDto showRequestDto) {
+        ShowResponseDto updatedShow = showService.patchShow(id, showRequestDto);
 
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Show> patchShow(@PathVariable Long id, @RequestBody Show newShow) {
-        Optional<Show> show = showRepository.findById(id);
-
-        if (show.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            Show show1 = show.get();
-            if (newShow.getName() != null) {
-                show1.setName(newShow.getName());
-            }
-            if (newShow.getLocation() != null) {
-                show1.setLocation(newShow.getLocation());
-            }
-            if (newShow.getDate() != null) {
-                show1.setDate(newShow.getDate());
-            }
-            if (newShow.getWebsite() != null) {
-                show1.setWebsite(newShow.getWebsite());
-            }
-            if (newShow.getTicketSite() != null) {
-                show1.setTicketSite(newShow.getTicketSite());
-            }
-
-
-            Show returnShow = showRepository.save(show1);
-            return ResponseEntity.ok().body(returnShow);
-        }
+        return ResponseEntity.ok(updatedShow);
     }
 }
