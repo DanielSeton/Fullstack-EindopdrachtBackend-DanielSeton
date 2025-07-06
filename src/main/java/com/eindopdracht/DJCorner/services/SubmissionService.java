@@ -1,9 +1,11 @@
 package com.eindopdracht.DJCorner.services;
 
+import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
+import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class SubmissionService {
     }
 
     public Submission getSingleSubmission(Long id) {
-        return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
     }
 
     public List<SubmissionResponseDto> getAllSubmissions() {
@@ -44,14 +46,14 @@ public class SubmissionService {
         Optional<Submission> submissionOptional = this.submissionRepository.findById(id);
 
         if (submissionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Object with id: " + id + " not found");
+            throw new ResourceNotFoundException("Submission with id: " + id + " not found");
         }
 
         submissionRepository.deleteById(id);
     }
 
     public SubmissionResponseDto updateSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
-        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
         SubmissionMapper.updateEntity(submission, submissionRequestDto);
 
@@ -61,12 +63,33 @@ public class SubmissionService {
     }
 
     public SubmissionResponseDto patchSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
-        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
         SubmissionMapper.patchEntity(submission, submissionRequestDto);
 
         Submission updatedSubmission = this.submissionRepository.save(submission);
 
+        return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
+    }
+
+    public SubmissionResponseDto updateFeedback(Long submissionId, FeedbackUpdateDto feedbackUpdateDto){
+        Submission submission = submissionRepository.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + submissionId + " not found"));
+
+        Feedback feedback = submission.getFeedback();
+        if (feedback == null) {
+            feedback = new Feedback();
+            submission.setFeedback(feedback);
+        }
+
+        if (feedbackUpdateDto.getFeedback() != null) {
+            feedback.setFeedback(feedbackUpdateDto.getFeedback());
+        }
+
+        if (feedbackUpdateDto.getStatus() != null) {
+            feedback.setStatus(feedbackUpdateDto.getStatus());
+        }
+
+        Submission updatedSubmission = submissionRepository.save(submission);
         return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
     }
 }

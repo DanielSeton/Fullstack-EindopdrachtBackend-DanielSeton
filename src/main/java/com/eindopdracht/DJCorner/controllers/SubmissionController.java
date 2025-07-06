@@ -3,6 +3,7 @@ package com.eindopdracht.DJCorner.controllers;
 
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
+import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
@@ -87,6 +88,12 @@ public class SubmissionController {
     @PatchMapping("/{id}")
     public ResponseEntity<SubmissionResponseDto> patchSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
         SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
+        return ResponseEntity.ok(updatedSubmission);
+    }
+
+    @PatchMapping("/{id}/feedback")
+    public ResponseEntity<SubmissionResponseDto> updateFeedback(@PathVariable Long id, @RequestBody FeedbackUpdateDto feedbackUpdateDto) {
+        SubmissionResponseDto updatedSubmission = submissionService.updateFeedback(id, feedbackUpdateDto);
         return ResponseEntity.ok(updatedSubmission);
     }
 }

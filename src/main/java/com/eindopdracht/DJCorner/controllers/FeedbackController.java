@@ -1,17 +1,16 @@
 package com.eindopdracht.DJCorner.controllers;
 
-import com.eindopdracht.DJCorner.dtos.FeedbackRequestDto;
 import com.eindopdracht.DJCorner.dtos.FeedbackResponseDto;
+import com.eindopdracht.DJCorner.mappers.FeedbackMapper;
 import com.eindopdracht.DJCorner.models.Feedback;
-import com.eindopdracht.DJCorner.repositories.FeedbackRepository;
-import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
+import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.services.FeedbackService;
 import com.eindopdracht.DJCorner.services.SubmissionService;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("feedback")
@@ -24,65 +23,31 @@ public class FeedbackController {
     }
 
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Feedback> getFeedback(@PathVariable Long id) {
-//        Optional<Feedback> feedback = feedbackRepository.findById(id);
-//
-//        if (feedback.isPresent()) {
-//            return ResponseEntity.ok(feedback.get());
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 
-//    @PutMapping("/{feedbackId}")
-//    public ResponseEntity<FeedbackResponseDto> updateFeedback(@PathVariable Long feedbackId, @Valid @RequestBody FeedbackRequestDto feedbackRequestDto) {
-//        FeedbackResponseDto updatedFeedback = feedbackService.updateFeedback(feedbackId, feedbackRequestDto);
-//
-//        return ResponseEntity.ok(updatedFeedback);
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteFeedback(@PathVariable Long id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
+    @GetMapping
+    public ResponseEntity <List<FeedbackResponseDto>> getAllFeedbacks() {
+        return ResponseEntity.ok(feedbackService.getAllFeedbacks());
+    }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Feedback> updateFeedback(@PathVariable Long id, @RequestBody Feedback newFeedback) {
-//        Optional<Feedback> feedback = feedbackRepository.findById(id);
-//
-//        if (feedback.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//
-//        } else {
-//            Feedback feedback1 = feedback.get();
-//
-//            feedback1.setFeedback(newFeedback.getFeedback());
-//            feedback1.setStatus(newFeedback.getStatus());
-//
-//            Feedback returnFeedback = feedbackRepository.save(feedback1);
-//
-//            return ResponseEntity.ok().body(returnFeedback);
-//        }
-//    }
-//
-//
-//
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Feedback> patchFeedback(@PathVariable Long id, @RequestBody Feedback newFeedback) {
-//        Optional<Feedback> feedback = feedbackRepository.findById(id);
-//
-//        if (feedback.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//        } else {
-//            Feedback feedback1 = feedback.get();
-//            if (newFeedback.getFeedback() != null) {
-//                feedback1.setFeedback(newFeedback.getFeedback());
-//            }
-//            if (newFeedback.getStatus() != null) {
-//                feedback1.setStatus(newFeedback.getStatus());
-//            }
-//
-//
-//            Feedback returnFeedback = feedbackRepository.save(feedback1);
-//            return ResponseEntity.ok().body(returnFeedback);
-//        }
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<FeedbackResponseDto> getFeedbackById(@PathVariable Long id) {
+        return ResponseEntity.ok(FeedbackMapper.toFeedbackResponseDto(this.feedbackService.getSingleFeedback(id)));
+    }
+
+    @Transactional
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<FeedbackResponseDto>> getFeedbackByStatus(@PathVariable Status status) {
+        List<Feedback> feedbackList = feedbackService.getFeedbackByStatus(status);
+        List<FeedbackResponseDto> dtoList = feedbackList.stream()
+                .map(FeedbackMapper::toFeedbackResponseDto).toList();
+
+        return ResponseEntity.ok(dtoList);
+    }
 }

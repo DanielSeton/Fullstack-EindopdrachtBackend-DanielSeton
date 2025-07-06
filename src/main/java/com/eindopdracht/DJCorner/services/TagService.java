@@ -33,7 +33,7 @@ public class TagService {
     }
 
     public Tag getTagById(Long id) {
-        return this.tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        return this.tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag with id: " + id + " not found"));
     }
 
     public Tag createTag(TagRequestDto tagRequestDto) {
@@ -44,14 +44,14 @@ public class TagService {
         Optional<Tag> optionalTag = this.tagRepository.findById(id);
 
         if (optionalTag.isEmpty()) {
-            throw new ResourceNotFoundException("Object with id: " + id + " not found");
+            throw new ResourceNotFoundException("Tag with id: " + id + " not found");
         }
 
         tagRepository.deleteById(id);
     }
 
     public TagResponseDto updateTag(Long id, TagRequestDto tagRequestDto) {
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag with id: " + id + " not found"));
 
         tag.setName(tagRequestDto.getName());
 

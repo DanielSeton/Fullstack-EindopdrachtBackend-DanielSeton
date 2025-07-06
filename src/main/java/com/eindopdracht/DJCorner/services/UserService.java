@@ -38,25 +38,25 @@ public class UserService {
     }
 
     public User getSingleUser(Long id) {
-        return this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        return this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
     }
 
     public User getUserByUsername(String username) {
-        return this.userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("Object with name: " + username + " not found"));
+        return this.userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User with name: " + username + " not found"));
     }
 
     public void deleteSingleUser(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
 
         if (userOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Object with id: " + id + " not found");
+            throw new ResourceNotFoundException("User with id: " + id + " not found");
         }
 
         userRepository.deleteById(id);
     }
 
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
 
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     public UserResponseDto patchUser(Long id,UserRequestDto userRequestDto) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + id + " not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
 
 
         if (userRequestDto.getUsername() != null) {
