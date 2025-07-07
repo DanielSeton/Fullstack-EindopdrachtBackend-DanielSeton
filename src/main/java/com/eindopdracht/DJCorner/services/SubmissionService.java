@@ -3,13 +3,16 @@ package com.eindopdracht.DJCorner.services;
 import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
+import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -91,5 +94,25 @@ public class SubmissionService {
 
         Submission updatedSubmission = submissionRepository.save(submission);
         return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
+    }
+
+    @Transactional
+    public List<Submission> getSubmissionsByFeedbackStatus(Status status) {
+        return submissionRepository.findByFeedback_Status(status);
+    }
+
+    @Transactional
+    public List<SubmissionResponseDto> filterSubmissions(List<String> tags, Status status) {
+        long tagCount = (tags != null) ? tags.size() : 0;
+
+        List<Submission> submissions = submissionRepository.filterSubmissions(
+                tags != null ? tags : List.of(),
+                tagCount,
+                status != null ? status.name() : null
+        );
+
+        return submissions.stream()
+                .map(SubmissionMapper::toSubmissionResponseDto)
+                .toList();
     }
 }

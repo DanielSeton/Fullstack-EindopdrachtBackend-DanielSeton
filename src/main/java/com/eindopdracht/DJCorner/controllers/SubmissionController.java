@@ -4,6 +4,7 @@ package com.eindopdracht.DJCorner.controllers;
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
 import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
+import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
@@ -13,7 +14,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/submissions")
@@ -49,6 +53,24 @@ public class SubmissionController {
     @GetMapping("/{id}")
     public ResponseEntity<SubmissionResponseDto> getSubmissionById(@PathVariable Long id) {
         return ResponseEntity.ok(SubmissionMapper.toSubmissionResponseDto(this.submissionService.getSingleSubmission(id)));
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByStatus(@PathVariable Status status) {
+        List<Submission> submissions = submissionService.getSubmissionsByFeedbackStatus(status);
+        List<SubmissionResponseDto> dtoList = submissions.stream()
+                .map(SubmissionMapper::toSubmissionResponseDto).toList();
+
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByTags(
+            @RequestParam(required = false) List<String> tags,
+            @RequestParam(required = false) Status status){
+
+        List<SubmissionResponseDto> dtos = submissionService.filterSubmissions(tags, status);
+        return ResponseEntity.ok(dtos);
     }
 
 
