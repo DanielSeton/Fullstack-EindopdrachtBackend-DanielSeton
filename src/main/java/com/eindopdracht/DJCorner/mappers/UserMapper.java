@@ -23,7 +23,6 @@ public class UserMapper {
         userResponseDto.id = user.getId();
         userResponseDto.username = user.getUsername();
         userResponseDto.email = user.getEmail();
-        userResponseDto.password = user.getPassword();
         userResponseDto.role = user.getRole();
 
         return userResponseDto;
