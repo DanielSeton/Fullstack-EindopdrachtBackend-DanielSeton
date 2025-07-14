@@ -21,25 +21,18 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final JwtRequestFilter jwtRequestFilter;
 
-    public SecurityConfig(JwtService jwtService, UserRepository userRepository, JwtRequestFilter jwtRequestFilter) {
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new MyUserDetailsService(this.userRepository);
+    public SecurityConfig(JwtService service, UserRepository userRepos) {
+        this.jwtService = service;
+        this.userRepository = userRepos;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService udService, PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(udService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(provider);
+        var auth = new DaoAuthenticationProvider();
+        auth.setPasswordEncoder(passwordEncoder);
+        auth.setUserDetailsService(udService);
+        return new ProviderManager(auth);
     }
 
     @Bean
@@ -48,16 +41,21 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return new MyUserDetailsService(this.userRepository);
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth").permitAll()
                         .requestMatchers("/register").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
