@@ -24,10 +24,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private String role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>();
@@ -65,11 +63,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

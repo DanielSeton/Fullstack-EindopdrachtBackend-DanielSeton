@@ -12,7 +12,18 @@ public class UserMapper {
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(userRequestDto.getPassword());
-        user.setRole(userRequestDto.getRole());
+        user.setRole("USER");
+
+        return user;
+    }
+
+    public static User toEntityAdmin(UserRequestDto userRequestDto) {
+        User user = new User();
+
+        user.setUsername(userRequestDto.getUsername());
+        user.setEmail(userRequestDto.getEmail());
+        user.setPassword(userRequestDto.getPassword());
+        user.setRole("ADMIN");
 
         return user;
     }

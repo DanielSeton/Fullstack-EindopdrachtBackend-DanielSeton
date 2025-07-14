@@ -1,6 +1,6 @@
 package com.eindopdracht.DJCorner.controllers;
 
-import com.eindopdracht.DJCorner.dtos.AuthDto;
+import com.eindopdracht.DJCorner.dtos.auth.AuthRequestDto;
 import com.eindopdracht.DJCorner.security.JwtService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<Object> signIn(@RequestBody AuthDto authDto) {
+    public ResponseEntity<Object> signIn(@RequestBody AuthRequestDto authRequestDto) {
         UsernamePasswordAuthenticationToken up =
-                new UsernamePasswordAuthenticationToken(authDto.username, authDto.password);
+                new UsernamePasswordAuthenticationToken(authRequestDto.username, authRequestDto.password);
 
         try {
             Authentication auth = authManager.authenticate(up);

@@ -6,8 +6,8 @@ import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.UserMapper;
 import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,19 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User createUser(UserRequestDto userRequestDto) {
-        return this.userRepository.save(UserMapper.toEntity(userRequestDto));
+        User user = UserMapper.toEntity(userRequestDto);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return this.userRepository.save(user);
     }
 
     public List<UserResponseDto> getAllUsers(){
