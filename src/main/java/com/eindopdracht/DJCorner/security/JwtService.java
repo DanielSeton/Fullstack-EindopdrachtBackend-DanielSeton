@@ -17,8 +17,6 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    //todo Nieuwe secret key aangemaakt, vraag over hoe deze gebruikt word
-
     private final static String SECRET_KEY = "ZmxpcHBpZWRpZWZsYXBwZXRpZWZsZXV0ZWxkaXRpc2RlZ2VoZWltZXNsZXV0ZWw=";
 
     private Key getSigningKey() {

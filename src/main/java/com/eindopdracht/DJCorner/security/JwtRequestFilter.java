@@ -27,8 +27,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.userDetailsService = udService;
     }
 
-    //todo mijn jwt token blijft leeg of ongeldig terwijl ik wel een normale token krijg. How en why?
-
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,

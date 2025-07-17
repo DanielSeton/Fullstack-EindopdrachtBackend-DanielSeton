@@ -3,6 +3,7 @@ package com.eindopdracht.DJCorner.security;
 import com.eindopdracht.DJCorner.repositories.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -45,12 +46,11 @@ public class SecurityConfig {
         return new MyUserDetailsService(this.userRepository);
     }
 
-    //todo vragen over hoe jwtService gebruikt moet worden
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
                         .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
                         .anyRequest().permitAll()
                 )
