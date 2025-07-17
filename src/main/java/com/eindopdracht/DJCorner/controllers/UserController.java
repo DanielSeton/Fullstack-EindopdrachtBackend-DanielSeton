@@ -43,9 +43,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
-        userRequestDto.setRole("USER");
-
         User user = this.userService.createUser(userRequestDto);
+        UserResponseDto userResponseDto = UserMapper.toResponseDto(user);
+
+        URI uri = UriHelper.buildResourceUri(user.getId());
+
+        return ResponseEntity.created(uri).body(userResponseDto);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> createUserWithRole(@Valid @RequestBody UserRequestDto userRequestDto) {
+        User user = userService.createUserWithRole(userRequestDto);
         UserResponseDto userResponseDto = UserMapper.toResponseDto(user);
 
         URI uri = UriHelper.buildResourceUri(user.getId());

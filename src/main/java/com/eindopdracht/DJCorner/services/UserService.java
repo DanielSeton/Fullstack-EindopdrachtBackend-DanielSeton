@@ -18,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final List<String> ALLOWED_ROLES = List.of("USER", "STAFF", "ADMIN");
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -25,8 +26,37 @@ public class UserService {
     }
 
     public User createUser(UserRequestDto userRequestDto) {
-        User user = UserMapper.toEntity(userRequestDto);
+        String role = userRequestDto.getRole();
 
+        if (role != null && !ALLOWED_ROLES.contains(role.toUpperCase())) {
+            throw new ResourceNotFoundException("Invalid role: " + role);
+        }
+
+        if (role == null || role.isBlank()) {
+            userRequestDto.setRole("USER");
+        } else {
+            userRequestDto.setRole(role.toUpperCase());
+        }
+
+        User user = UserMapper.toEntity(userRequestDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return this.userRepository.save(user);
+    }
+
+    public User createUserWithRole(UserRequestDto userRequestDto) {
+        String role = userRequestDto.getRole();
+
+        if (role == null || role.isBlank()) {
+            throw new IllegalArgumentException("Role cannot be null or empty");
+        }
+
+        if (!ALLOWED_ROLES.contains(role.toUpperCase())) {
+            throw new IllegalArgumentException("Invalid role: " + role);
+        }
+
+        userRequestDto.setRole(role.toUpperCase());
+        User user = UserMapper.toEntity(userRequestDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return this.userRepository.save(user);

@@ -16,7 +16,10 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private final static String SECRET_KEY = "flippiedieflappetiefleutelditisdegeheimesleutel";
+
+    //todo Nieuwe secret key aangemaakt, vraag over hoe deze gebruikt word
+
+    private final static String SECRET_KEY = "ZmxpcHBpZWRpZWZsYXBwZXRpZWZsZXV0ZWxkaXRpc2RlZ2VoZWltZXNsZXV0ZWw=";
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -37,7 +40,14 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("JWT token is null or empty");
+        }
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Boolean isTokenExpired(String token) {

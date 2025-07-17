@@ -45,10 +45,13 @@ public class SecurityConfig {
         return new MyUserDetailsService(this.userRepository);
     }
 
+    //todo vragen over hoe jwtService gebruikt moet worden
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
                         .anyRequest().permitAll()
                 )
                 .csrf(csrf -> csrf.disable())

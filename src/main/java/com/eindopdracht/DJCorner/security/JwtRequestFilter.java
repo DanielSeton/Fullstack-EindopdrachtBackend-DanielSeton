@@ -27,40 +27,44 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.userDetailsService = udService;
     }
 
+    //todo mijn jwt token blijft leeg of ongeldig terwijl ik wel een normale token krijg. How en why?
+
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest
-                                            request,
-                                    @NonNull HttpServletResponse
-                                            response,
-                                    @NonNull FilterChain
-                                            filterChain) throws ServletException, IOException {
-        final String authorizationHeader =
-                request.getHeader("Authorization");
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+
+        final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
 
-        if (authorizationHeader != null &&
-                authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtService.extractUsername(jwt);
-        }
-        if (username != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails =
-                    this.userDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken
-                        usernamePasswordAuthenticationToken = new
-                        UsernamePasswordAuthenticationToken(
-                        userDetails, null,
-                        userDetails.getAuthorities()
-                );
-                usernamePasswordAuthenticationToken.setDetails(new
-                        WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwt = authorizationHeader.substring(7).trim();
+            try {
+                username = jwtService.extractUsername(jwt);
+            } catch (Exception e) {
+                System.out.println("JWT extractUsername error: " + e.getMessage());
             }
         }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+            if (jwtService.validateToken(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                System.out.println("Logged in user: " + userDetails.getUsername());
+                userDetails.getAuthorities().forEach(auth ->
+                        System.out.println("Authority: " + auth.getAuthority()));
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
 }
