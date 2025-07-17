@@ -1,5 +1,6 @@
 package com.eindopdracht.DJCorner.security;
 
+import com.eindopdracht.DJCorner.exceptions.InvalidJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 username = jwtService.extractUsername(jwt);
             } catch (Exception e) {
-                System.out.println("JWT extractUsername error: " + e.getMessage());
+                throw new InvalidJwtException("Invalid JWT token: " + e.getMessage());
             }
         }
 
