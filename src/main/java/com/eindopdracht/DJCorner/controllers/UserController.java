@@ -51,6 +51,16 @@ public class UserController {
         return ResponseEntity.created(uri).body(userResponseDto);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> createUserWithRole(@Valid @RequestBody UserRequestDto userRequestDto) {
+        User user = userService.createUserWithRole(userRequestDto);
+        UserResponseDto userResponseDto = UserMapper.toResponseDto(user);
+
+        URI uri = UriHelper.buildResourceUri(user.getId());
+
+        return ResponseEntity.created(uri).body(userResponseDto);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {

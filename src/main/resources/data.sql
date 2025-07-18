@@ -1,5 +1,46 @@
-INSERT INTO users (email, password, username, role) VALUES ('AnnieV@live.nl', 'HE3e9*d1L3w', 'AnnieJammie', 'USER'),('SjaakieHardGakie@gmail.com','wachtwoord123','Noisemaker20', 'USER'),('Hardcoreharry@gmail.com','Utrecht305','HardcoreHarry', 'STAFF');
+INSERT INTO users (email, password, username, role) VALUES
+                                                        ('AnnieV@live.nl', '$2a$12$oiIrauhXVpkUqT8XN8Vgouy2Z.x7elgEVgLklUxyJk4/ayMfkXniO', 'AnnieJammie', 'USER'),
+                                                        ('SjaakieHardGakie@gmail.com','$2a$12$kHIwMj7yzzu/fYTL5Ci70.4J9KZstBrRdVxjLXAU3HtRb3mMJ8RKi','Noisemaker20', 'USER'),
+                                                        ('Hardcoreharry@gmail.com','$2a$12$Zg2OAZIO48WMZgjxE6Rxx.nLviBqXJjcC2W0jvTAHBUMvyccRfsrW','HardcoreHarry', 'STAFF'),
+                                                        ('adminemail@email.com', '$2a$12$k3udrFB0qdrZL2kSYT60dOpKwJd33HUSqh6AveYqlaJtodoyBQxWK', 'testadmin', 'ADMIN'),
+                                                        ('useremail@email.com', '$2a$12$dfByHPBEbU2cDXu84cIdpu3f/9lxp3tJjQYE6R1KVZoLaRTp5gxxm', 'testuser', 'USER');
 
-INSERT INTO tags (name) VALUES ('Acoustic'), ('Alternative'), ('Beatbox'), ('Blues'), ('Boogie'), ('Country'), ('Chillhop'), ('Dance'), ('Metal'), ('Disco'), ('Downtempo'), ('Drill'), ('Dubstep'),  ('EDM'), ('Electro'), ('Eurobeat'), ('Hardcore'), ('House'), ('Jazz'), ('Lo-Fi'), ('Punk'), ('Pop'), ('Rave'), ('Reggaetón'), ('Rock'), ('Soul'), ('Synthwave'), ('Trap'), ('Techno'), ('Vocals included'), ('No vocals');
+INSERT INTO shows (name, date, location, website, ticket_site) VALUES
+                                                                   ('Appelpop', '2025-09-12', 'Tiel, Netherlands', 'https://appelpop.nl/','https://appelpop.nl/'),
+                                                                   ('Smeerboel Festival', '2025-09-13','Utrecht, Netherlands', 'https://www.smeerboel.nl/', 'https://www.smeerboel.nl/tickets/?_gl=1*13vk4ps*_up*MQ..*_gs*MQ..'),
+                                                                   ('Titanium', '2025-09-20', 'Vianen, Netherlands', 'https://www.titaniumfestival.com/', 'https://www.titaniumfestival.com/tickets/'),
+                                                                   ('Supremacy', '2025-09-27', 'Arnhem, Netherlands', 'https://www.supremacy.nl/', 'https://www.supremacy.nl/'),
+                                                                   ('Festyland 2025', '2025-10-03','Volkel, Netherlands', 'https://festyland.nl/', 'https://festyland.nl/tickets/');
 
-INSERT INTO shows (name, date, location, website, ticket_site) VALUES ('Appelpop', '2025-09-12', 'Tiel, Netherlands', 'https://appelpop.nl/','https://appelpop.nl/'), ('Smeerboel Festival', '2025-09-13','Utrecht, Netherlands', 'https://www.smeerboel.nl/', 'https://www.smeerboel.nl/tickets/?_gl=1*13vk4ps*_up*MQ..*_gs*MQ..'), ('Titanium', '2025-09-20', 'Vianen, Netherlands', 'https://www.titaniumfestival.com/', 'https://www.titaniumfestival.com/tickets/'), ('Supremacy', '2025-09-27', 'Arnhem, Netherlands', 'https://www.supremacy.nl/', 'https://www.supremacy.nl/'), ('Festyland 2025', '2025-10-03','Volkel, Netherlands', 'https://festyland.nl/', 'https://festyland.nl/tickets/');
+INSERT INTO tags (name) VALUES
+                            ('Acoustic'),
+                            ('Alternative'),
+                            ('Beatbox'),
+                            ('Blues'),
+                            ('Boogie'),
+                            ('Country'),
+                            ('Chillhop'),
+                            ('Dance'),
+                            ('Metal'),
+                            ('Disco'),
+                            ('Downtempo'),
+                            ('Drill'),
+                            ('Dubstep'),
+                            ('EDM'),
+                            ('Electro'),
+                            ('Eurobeat'),
+                            ('Hardcore'),
+                            ('House'),
+                            ('Jazz'),
+                            ('Lo-Fi'),
+                            ('Punk'),
+                            ('Pop'),
+                            ('Rave'),
+                            ('Reggaetón'),
+                            ('Rock'),
+                            ('Soul'),
+                            ('Synthwave'),
+                            ('Trap'),
+                            ('Techno'),
+                            ('Vocals included'),
+                            ('No vocals');

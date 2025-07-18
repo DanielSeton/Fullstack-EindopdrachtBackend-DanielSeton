@@ -19,7 +19,7 @@ public class UserRequestDto {
     @Size(min = 6, max = 25)
     public String password;
 
-    public Role role;
+    public String role;
 
     public String getUsername() {
         return username;
@@ -45,11 +45,11 @@ public class UserRequestDto {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }
