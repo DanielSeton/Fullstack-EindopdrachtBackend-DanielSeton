@@ -1,7 +1,9 @@
 INSERT INTO users (email, password, username, role) VALUES
                                                         ('AnnieV@live.nl', '$2a$12$oiIrauhXVpkUqT8XN8Vgouy2Z.x7elgEVgLklUxyJk4/ayMfkXniO', 'AnnieJammie', 'USER'),
                                                         ('SjaakieHardGakie@gmail.com','$2a$12$kHIwMj7yzzu/fYTL5Ci70.4J9KZstBrRdVxjLXAU3HtRb3mMJ8RKi','Noisemaker20', 'USER'),
-                                                        ('Hardcoreharry@gmail.com','$2a$12$Zg2OAZIO48WMZgjxE6Rxx.nLviBqXJjcC2W0jvTAHBUMvyccRfsrW','HardcoreHarry', 'STAFF');
+                                                        ('Hardcoreharry@gmail.com','$2a$12$Zg2OAZIO48WMZgjxE6Rxx.nLviBqXJjcC2W0jvTAHBUMvyccRfsrW','HardcoreHarry', 'STAFF'),
+                                                        ('adminemail@email.com', '$2a$12$k3udrFB0qdrZL2kSYT60dOpKwJd33HUSqh6AveYqlaJtodoyBQxWK', 'testadmin', 'ADMIN'),
+                                                        ('useremail@email.com', '$2a$12$dfByHPBEbU2cDXu84cIdpu3f/9lxp3tJjQYE6R1KVZoLaRTp5gxxm', 'testuser', 'USER');
 
 INSERT INTO shows (name, date, location, website, ticket_site) VALUES
                                                                    ('Appelpop', '2025-09-12', 'Tiel, Netherlands', 'https://appelpop.nl/','https://appelpop.nl/'),

@@ -50,9 +50,42 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
+                        //users
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/users").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/users").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
                         .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
-                        .anyRequest().permitAll()
+
+                        //submissions
+
+                        //feedback
+                        .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/feedback/status/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/feedback").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/feedback").hasAnyRole("ADMIN", "STAFF")
+
+                        //playlists
+                        .requestMatchers(HttpMethod.GET, "/playlists").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/playlists").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/playlists").hasAnyRole("ADMIN", "STAFF")
+
+                        //tags
+                        .requestMatchers(HttpMethod.GET, "/tags").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/tags").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/tags").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/tags").hasAnyRole("ADMIN", "STAFF")
+
+                        //shows
+                        .requestMatchers(HttpMethod.GET, "/shows").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/shows").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/shows").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PATCH, "/shows").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("ADMIN", "STAFF")
+
+                        .anyRequest().denyAll()
                 )
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
