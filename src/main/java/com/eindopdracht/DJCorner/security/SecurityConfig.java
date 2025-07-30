@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -55,11 +57,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/users").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
                         .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
 
                         //submissions
+                        .requestMatchers("/submissions/**").authenticated()
 
                         //feedback
                         .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
@@ -79,7 +83,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/tags").hasAnyRole("ADMIN", "STAFF")
 
                         //shows
-                        .requestMatchers(HttpMethod.GET, "/shows").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/shows").permitAll()
                         .requestMatchers(HttpMethod.POST, "/shows").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers(HttpMethod.PUT, "/shows").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers(HttpMethod.PATCH, "/shows").hasAnyRole("ADMIN", "STAFF")
@@ -87,6 +91,7 @@ public class SecurityConfig {
 
                         .anyRequest().denyAll()
                 )
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class);
