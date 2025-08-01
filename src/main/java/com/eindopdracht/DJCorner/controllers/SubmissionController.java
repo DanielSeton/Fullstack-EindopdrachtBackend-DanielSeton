@@ -14,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -78,8 +79,11 @@ public class SubmissionController {
 
 
     @PostMapping
-    public ResponseEntity<SubmissionResponseDto> createSubmission(@Valid @RequestBody SubmissionRequestDto submissionRequestDto) {
-        Submission submission = this.submissionService.createSubmission(submissionRequestDto);
+    public ResponseEntity<SubmissionResponseDto> createSubmission(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto) {
+
+        Submission submission = submissionService.createSubmission(file, submissionRequestDto);
         SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
 
         URI uri = UriHelper.buildResourceUri(submission.getId());

@@ -11,6 +11,7 @@ import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,13 +22,25 @@ import java.util.Optional;
 public class SubmissionService {
 
     private final SubmissionRepository submissionRepository;
+    private final TagService tagService;
 
-    public SubmissionService(SubmissionRepository submissionRepository) {
+    public SubmissionService(SubmissionRepository submissionRepository, TagService tagService) {
         this.submissionRepository = submissionRepository;
+        this.tagService = tagService;
     }
 
-    public Submission createSubmission(SubmissionRequestDto submissionRequestDto) {
-        return this.submissionRepository.save(SubmissionMapper.toEntity(submissionRequestDto));
+    public Submission createSubmission(MultipartFile file, SubmissionRequestDto submissionRequestDto) {
+        Submission submission = SubmissionMapper.toEntity(submissionRequestDto);
+
+        try {
+            submission.setMusicFile(file.getBytes());
+            submission.setMusicFileName(file.getOriginalFilename());
+            submission.setMusicFileType(file.getContentType());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read uploaded file", e);
+        }
+
+        return submissionRepository.save(submission);
     }
 
     public Submission getSingleSubmission(Long id) {
