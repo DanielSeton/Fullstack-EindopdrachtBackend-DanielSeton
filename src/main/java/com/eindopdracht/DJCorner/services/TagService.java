@@ -59,4 +59,9 @@ public class TagService {
 
         return TagMapper.toTagResponseDto(updatedTag);
     }
+
+    public Tag findOrCreateByName(String name) {
+        return tagRepository.findByName(name)
+                .orElseGet(() -> tagRepository.save(new Tag(name)));
+    }
 }

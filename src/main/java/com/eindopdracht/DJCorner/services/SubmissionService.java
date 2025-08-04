@@ -8,7 +8,10 @@ import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
+import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
+import com.eindopdracht.DJCorner.repositories.UserRepository;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,15 +25,18 @@ import java.util.Optional;
 public class SubmissionService {
 
     private final SubmissionRepository submissionRepository;
-    private final TagService tagService;
+    private final SubmissionMapper submissionMapper;
+    private final UserRepository userRepository;
 
-    public SubmissionService(SubmissionRepository submissionRepository, TagService tagService) {
+
+    public SubmissionService(SubmissionRepository submissionRepository, SubmissionMapper submissionMapper, UserRepository userRepository) {
         this.submissionRepository = submissionRepository;
-        this.tagService = tagService;
+        this.submissionMapper = submissionMapper;
+        this.userRepository = userRepository;
     }
 
-    public Submission createSubmission(MultipartFile file, SubmissionRequestDto submissionRequestDto) {
-        Submission submission = SubmissionMapper.toEntity(submissionRequestDto);
+    public Submission createSubmission(MultipartFile file, SubmissionRequestDto submissionRequestDto, MyUserDetails userDetails) {
+        Submission submission = submissionMapper.toEntity(submissionRequestDto);
 
         try {
             submission.setMusicFile(file.getBytes());
@@ -39,6 +45,15 @@ public class SubmissionService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to read uploaded file", e);
         }
+
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+
+        submission.setUser(user);
+        submission.setArtistName(user.getUsername());
+
+        submission.setUploadDate(LocalDate.now());
 
         return submissionRepository.save(submission);
     }
@@ -71,7 +86,7 @@ public class SubmissionService {
     public SubmissionResponseDto updateSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
-        SubmissionMapper.updateEntity(submission, submissionRequestDto);
+        submissionMapper.updateEntity(submission, submissionRequestDto);
 
         Submission updatedSubmission = this.submissionRepository.save(submission);
 
@@ -81,7 +96,7 @@ public class SubmissionService {
     public SubmissionResponseDto patchSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
 
-        SubmissionMapper.patchEntity(submission, submissionRequestDto);
+        submissionMapper.patchEntity(submission, submissionRequestDto);
 
         Submission updatedSubmission = this.submissionRepository.save(submission);
 

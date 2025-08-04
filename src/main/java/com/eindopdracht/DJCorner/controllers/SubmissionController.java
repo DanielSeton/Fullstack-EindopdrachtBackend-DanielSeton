@@ -8,10 +8,12 @@ import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
 import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,9 +83,10 @@ public class SubmissionController {
     @PostMapping
     public ResponseEntity<SubmissionResponseDto> createSubmission(
             @RequestPart("file") MultipartFile file,
-            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto) {
+            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
 
-        Submission submission = submissionService.createSubmission(file, submissionRequestDto);
+        Submission submission = submissionService.createSubmission(file, submissionRequestDto, userDetails);
         SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
 
         URI uri = UriHelper.buildResourceUri(submission.getId());
