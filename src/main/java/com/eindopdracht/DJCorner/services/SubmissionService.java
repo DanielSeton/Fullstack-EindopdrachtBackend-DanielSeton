@@ -13,6 +13,8 @@ import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
 import com.eindopdracht.DJCorner.repositories.UserRepository;
 import com.eindopdracht.DJCorner.security.MyUserDetails;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,15 +64,10 @@ public class SubmissionService {
         return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
     }
 
-    public List<SubmissionResponseDto> getAllSubmissions() {
-        List<Submission> submissionsList = submissionRepository.findAll();
-        List<SubmissionResponseDto> submissionResponseDtoList = new ArrayList<>();
+    public Page<SubmissionResponseDto> getAllSubmissions(Pageable pageable) {
+        Page<Submission> submissionsPage = submissionRepository.findAll(pageable);
 
-        for (Submission submission : submissionsList) {
-            SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
-            submissionResponseDtoList.add(submissionResponseDto);
-        }
-        return submissionResponseDtoList;
+        return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
     }
 
     public void deleteSingleSubmission(Long id) {

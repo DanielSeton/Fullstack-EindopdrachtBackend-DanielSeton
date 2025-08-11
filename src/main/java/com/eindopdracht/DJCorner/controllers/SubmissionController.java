@@ -11,18 +11,15 @@ import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/submissions")
@@ -36,8 +33,12 @@ public class SubmissionController {
 
 
     @GetMapping
-    public ResponseEntity<List<SubmissionResponseDto>> getAllSubmissions() {
-        return ResponseEntity.ok(submissionService.getAllSubmissions());
+    public ResponseEntity<Page<SubmissionResponseDto>> getAllSubmissions(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "15") int size
+    ) {
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getAllSubmissions(PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
     }
 
     @GetMapping("/{id}/audio")
