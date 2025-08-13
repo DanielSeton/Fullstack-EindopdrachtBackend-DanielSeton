@@ -132,22 +132,22 @@ public class SubmissionService {
     }
 
     @Transactional
-    public List<Submission> getSubmissionsByFeedbackStatus(Status status) {
-        return submissionRepository.findByFeedback_Status(status);
+    public Page<SubmissionResponseDto> getSubmissionsByFeedbackStatus(Status status, Pageable pageable) {
+        Page<Submission> submissionsPage = submissionRepository.findByFeedback_Status(status, pageable);
+        return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
     }
 
     @Transactional
-    public List<SubmissionResponseDto> filterSubmissions(List<String> tags, Status status) {
+    public Page<SubmissionResponseDto> filterSubmissions(List<String> tags, Status status, Pageable pageable) {
         long tagCount = (tags != null) ? tags.size() : 0;
 
-        List<Submission> submissions = submissionRepository.filterSubmissions(
+        Page<Submission> submissionsPage = submissionRepository.filterSubmissions(
                 tags != null ? tags : List.of(),
                 tagCount,
-                status != null ? status.name() : null
+                status != null ? status.name() : null,
+                pageable
         );
 
-        return submissions.stream()
-                .map(SubmissionMapper::toSubmissionResponseDto)
-                .toList();
+        return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
     }
 }

@@ -72,21 +72,24 @@ public class SubmissionController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByStatus(@PathVariable Status status) {
-        List<Submission> submissions = submissionService.getSubmissionsByFeedbackStatus(status);
-        List<SubmissionResponseDto> dtoList = submissions.stream()
-                .map(SubmissionMapper::toSubmissionResponseDto).toList();
-
-        return ResponseEntity.ok(dtoList);
+    public ResponseEntity<Page<SubmissionResponseDto>> getSubmissionsByStatus(
+            @PathVariable Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size
+    ) {
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getSubmissionsByFeedbackStatus(status, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByTags(
+    public ResponseEntity<Page<SubmissionResponseDto>> getSubmissionsByTags(
             @RequestParam(required = false) List<String> tags,
-            @RequestParam(required = false) Status status){
-
-        List<SubmissionResponseDto> dtos = submissionService.filterSubmissions(tags, status);
-        return ResponseEntity.ok(dtos);
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size
+    ){
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.filterSubmissions(tags, status, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
     }
 
 

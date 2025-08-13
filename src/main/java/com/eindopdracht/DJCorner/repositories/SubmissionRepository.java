@@ -20,7 +20,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
     Page<Submission> findSubmissionByUser(User user, Pageable pageable);
 
-    List<Submission> findByFeedback_Status(Status status);
+    Page<Submission> findByFeedback_Status(Status status, Pageable pageable);
 
     @Query(value = """
         SELECT s.*
@@ -33,9 +33,10 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
         GROUP BY s.id
         HAVING (:tagNamesSize = 0 OR COUNT(DISTINCT t.name) = :tagNamesSize)
         """, nativeQuery = true)
-    List<Submission> filterSubmissions(
+    Page<Submission> filterSubmissions(
             @Param("tagNames") List<String> tagNames,
             @Param("tagNamesSize") long tagNamesSize,
-            @Param("status") String status
+            @Param("status") String status,
+            Pageable pageable
     );
 }
