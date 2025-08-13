@@ -34,8 +34,13 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         loadSubmission("test_track.mp3", "Demo Track", 128, 1L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Demo Track", 128, 2L, List.of("Dubstep", "EDM"));
-
+        loadSubmission("test_track.mp3", "Experiment", 320, 2L, List.of("Dubstep", "Drill", "Boogie", "EDM"));
+        loadSubmission("test_track.mp3", "Coole beats", 200, 1L, List.of("Pop", "Punk", "Hardcore"));
+        loadSubmission("test_track.mp3", "Insane funk", 128, 5L, List.of("Jazz", "Soul", "House", "Vocals included"));
+        loadSubmission("test_track.mp3", "Sicke track", 600, 5L, List.of("Boogie", "EDM"));
+        loadSubmission("test_track.mp3", "Beatssample2", 240, 2L, List.of("Dubstep"));
+        loadSubmission("test_track.mp3", "PartyRock", 190, 5L, List.of("Rock", "No vocals", "Techno"));
+        loadSubmission("test_track.mp3", "Demo Track2", 128, 2L, List.of("Soul", "EDM"));
     }
 
     private void loadSubmission(String fileName, String title, int bpm, Long userId, List<String> tagNames) throws IOException {

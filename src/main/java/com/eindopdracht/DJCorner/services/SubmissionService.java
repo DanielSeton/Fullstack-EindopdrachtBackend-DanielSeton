@@ -70,6 +70,16 @@ public class SubmissionService {
         return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
     }
 
+    @Transactional
+    public Page<SubmissionResponseDto> getUserSubmissions(MyUserDetails userDetails, Pageable pageable) {
+        String username = userDetails.getUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+
+        Page<Submission> submissionsPage = submissionRepository.findSubmissionByUser(user, pageable);
+        return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
+    }
+
     public void deleteSingleSubmission(Long id) {
         Optional<Submission> submissionOptional = this.submissionRepository.findById(id);
 

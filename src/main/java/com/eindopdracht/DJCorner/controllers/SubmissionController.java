@@ -41,6 +41,16 @@ public class SubmissionController {
         return ResponseEntity.ok(pagedSubmissions);
     }
 
+    @GetMapping("/mine")
+    public ResponseEntity<Page<SubmissionResponseDto>> getAllUserSubmissions(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "15") int size,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+        Page<SubmissionResponseDto> pagedSubmission = submissionService.getUserSubmissions(userDetails, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmission);
+
+    }
+
     @GetMapping("/{id}/audio")
     public ResponseEntity<byte[]> getAudioFile(@PathVariable Long id) {
         Submission submission = submissionService.getSingleSubmission(id);
