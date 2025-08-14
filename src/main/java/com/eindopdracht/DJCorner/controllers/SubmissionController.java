@@ -8,18 +8,18 @@ import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/submissions")
@@ -33,8 +33,22 @@ public class SubmissionController {
 
 
     @GetMapping
-    public ResponseEntity<List<SubmissionResponseDto>> getAllSubmissions() {
-        return ResponseEntity.ok(submissionService.getAllSubmissions());
+    public ResponseEntity<Page<SubmissionResponseDto>> getAllSubmissions(
+        @RequestParam (defaultValue = "0") int page,
+        @RequestParam (defaultValue = "15") int size
+    ) {
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getAllSubmissions(PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
+    }
+
+    @GetMapping("/mine")
+    public ResponseEntity<Page<SubmissionResponseDto>> getAllUserSubmissions(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "15") int size,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+        Page<SubmissionResponseDto> pagedSubmission = submissionService.getUserSubmissions(userDetails, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmission);
+
     }
 
     @GetMapping("/{id}/audio")
@@ -58,28 +72,35 @@ public class SubmissionController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByStatus(@PathVariable Status status) {
-        List<Submission> submissions = submissionService.getSubmissionsByFeedbackStatus(status);
-        List<SubmissionResponseDto> dtoList = submissions.stream()
-                .map(SubmissionMapper::toSubmissionResponseDto).toList();
-
-        return ResponseEntity.ok(dtoList);
+    public ResponseEntity<Page<SubmissionResponseDto>> getSubmissionsByStatus(
+            @PathVariable Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size
+    ) {
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getSubmissionsByFeedbackStatus(status, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<SubmissionResponseDto>> getSubmissionsByTags(
+    public ResponseEntity<Page<SubmissionResponseDto>> getSubmissionsByTags(
             @RequestParam(required = false) List<String> tags,
-            @RequestParam(required = false) Status status){
-
-        List<SubmissionResponseDto> dtos = submissionService.filterSubmissions(tags, status);
-        return ResponseEntity.ok(dtos);
+            @RequestParam(required = false) Status status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size
+    ){
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.filterSubmissions(tags, status, PageRequest.of(page, size));
+        return ResponseEntity.ok(pagedSubmissions);
     }
 
 
 
     @PostMapping
-    public ResponseEntity<SubmissionResponseDto> createSubmission(@Valid @RequestBody SubmissionRequestDto submissionRequestDto) {
-        Submission submission = this.submissionService.createSubmission(submissionRequestDto);
+    public ResponseEntity<SubmissionResponseDto> createSubmission(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+
+        Submission submission = submissionService.createSubmission(file, submissionRequestDto, userDetails);
         SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
 
         URI uri = UriHelper.buildResourceUri(submission.getId());

@@ -6,17 +6,25 @@ import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.models.Tag;
+import com.eindopdracht.DJCorner.services.TagService;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+
+@Component
 public class SubmissionMapper {
 
-    public static Submission toEntity(SubmissionRequestDto submissionRequestDto) {
+    private final TagService tagService;
+
+    public SubmissionMapper(TagService tagService) {
+        this.tagService = tagService;
+    }
+
+    public Submission toEntity(SubmissionRequestDto submissionRequestDto) {
         Submission submission = new Submission();
 
         submission.setTitle(submissionRequestDto.getTitle());
-        submission.setArtistName(submissionRequestDto.getArtistName());
-        submission.setUploadDate(submissionRequestDto.getUploadDate());
         submission.setBpm(submissionRequestDto.getBpm());
-        submission.setMusicFile(submissionRequestDto.getMusicFile());
         submission.setMusicFileName(submissionRequestDto.getMusicFileName());
         submission.setMusicFileType(submissionRequestDto.getMusicFileType());
 
@@ -24,8 +32,12 @@ public class SubmissionMapper {
         feedback.setStatus(Status.NO_FEEDBACK);
         submission.setFeedback(feedback);
 
-        submission.setUser(submissionRequestDto.getUser());
-        submission.setTags(submissionRequestDto.getTags());
+        List<Tag> tagObjects = submissionRequestDto.getTags()
+                .stream()
+                .map(tagService::findOrCreateByName)
+                .toList();
+
+        submission.setTags(tagObjects);
 
         return submission;
     }
@@ -68,32 +80,31 @@ public class SubmissionMapper {
         return submissionResponseDto;
     }
 
-    public static void updateEntity(Submission submission, SubmissionRequestDto submissionRequestDto) {
+    public void updateEntity(Submission submission, SubmissionRequestDto submissionRequestDto) {
         submission.setTitle(submissionRequestDto.getTitle());
         submission.setArtistName(submissionRequestDto.getArtistName());
-        submission.setUploadDate(submissionRequestDto.getUploadDate());
         submission.setBpm(submissionRequestDto.getBpm());
-        submission.setMusicFile(submissionRequestDto.getMusicFile());
         submission.setMusicFileName(submissionRequestDto.getMusicFileName());
         submission.setMusicFileType(submissionRequestDto.getMusicFileType());
-        submission.setTags(submissionRequestDto.getTags());
+
+        if (submissionRequestDto.getTags() != null) {
+            List<Tag> tagObjects = submissionRequestDto.getTags()
+                    .stream()
+                    .map(tagService::findOrCreateByName)
+                    .toList();
+            submission.setTags(tagObjects);
+        }
     }
 
-    public static void patchEntity(Submission submission, SubmissionRequestDto submissionRequestDto) {
+    public void patchEntity(Submission submission, SubmissionRequestDto submissionRequestDto) {
         if (submissionRequestDto.getTitle() != null) {
             submission.setTitle(submissionRequestDto.getTitle());
         }
         if (submissionRequestDto.getArtistName() != null) {
             submission.setArtistName(submissionRequestDto.getArtistName());
         }
-        if (submissionRequestDto.getUploadDate() != null) {
-            submission.setUploadDate(submissionRequestDto.getUploadDate());
-        }
         if (submissionRequestDto.getBpm() != null) {
             submission.setBpm(submissionRequestDto.getBpm());
-        }
-        if (submissionRequestDto.getMusicFile() != null) {
-            submission.setMusicFile(submissionRequestDto.getMusicFile());
         }
         if (submissionRequestDto.getMusicFileName() != null) {
             submission.setMusicFileName(submissionRequestDto.getMusicFileName());
@@ -102,7 +113,10 @@ public class SubmissionMapper {
             submission.setMusicFileType(submissionRequestDto.getMusicFileType());
         }
         if (submissionRequestDto.getTags() != null) {
-            submission.setTags(submissionRequestDto.getTags());
+            List<Tag> tagObjects = submissionRequestDto.getTags().stream()
+                    .map(tagService::findOrCreateByName)
+                    .toList();
+            submission.setTags(tagObjects);
         }
     }
 

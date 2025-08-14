@@ -3,11 +3,12 @@ package com.eindopdracht.DJCorner.repositories;
 import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.models.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,11 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     List<Submission> findByUser(User user);
     Optional<Submission> findByFeedbackId(Long feedbackId);
 
-    List<Submission> findByFeedback_Status(Status status);
+    Page<Submission> findAll(Pageable pageable);
+
+    Page<Submission> findSubmissionByUser(User user, Pageable pageable);
+
+    Page<Submission> findByFeedback_Status(Status status, Pageable pageable);
 
     @Query(value = """
         SELECT s.*
@@ -28,9 +33,10 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
         GROUP BY s.id
         HAVING (:tagNamesSize = 0 OR COUNT(DISTINCT t.name) = :tagNamesSize)
         """, nativeQuery = true)
-    List<Submission> filterSubmissions(
+    Page<Submission> filterSubmissions(
             @Param("tagNames") List<String> tagNames,
             @Param("tagNamesSize") long tagNamesSize,
-            @Param("status") String status
+            @Param("status") String status,
+            Pageable pageable
     );
 }

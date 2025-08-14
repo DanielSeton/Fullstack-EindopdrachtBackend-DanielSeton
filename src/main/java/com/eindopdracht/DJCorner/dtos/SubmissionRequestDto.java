@@ -13,20 +13,13 @@ public class SubmissionRequestDto {
     @NotBlank
     private String title;
     private String artistName;
-    private LocalDate uploadDate;
     private Integer bpm;
-
-    @NotEmpty
-    private byte[] musicFile;
 
     private String musicFileName;
     private String musicFileType;
 
     @NotEmpty
-    private User user;
-
-    @NotEmpty
-    private List<Tag> tags = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
 
     public String getTitle() {
@@ -45,28 +38,12 @@ public class SubmissionRequestDto {
         this.artistName = artistName;
     }
 
-    public LocalDate getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
-    }
-
     public Integer getBpm() {
         return bpm;
     }
 
     public void setBpm(Integer bpm) {
         this.bpm = bpm;
-    }
-
-    public byte[] getMusicFile() {
-        return musicFile;
-    }
-
-    public void setMusicFile(byte[] musicFile) {
-        this.musicFile = musicFile;
     }
 
     public String getMusicFileName() {
@@ -85,19 +62,11 @@ public class SubmissionRequestDto {
         this.musicFileType = musicFileType;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public List<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 }
