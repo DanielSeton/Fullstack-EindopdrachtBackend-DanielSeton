@@ -17,6 +17,8 @@ public class PlaylistController {
         this.playlistRepository = playlistRepository;
     }
 
+    //todo playlist tracks gelijk toevoegen aan playlist met postrequest hier
+
     @GetMapping
     public ResponseEntity<List<Playlist>> getAllPlaylists() {
         return ResponseEntity.ok(playlistRepository.findAll());
@@ -27,4 +29,6 @@ public class PlaylistController {
     public ResponseEntity<Playlist> createPlaylist(@RequestBody Playlist playlist) {
         return ResponseEntity.ok(playlistRepository.save(playlist));
     }
+
+
 }

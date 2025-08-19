@@ -1,37 +1,15 @@
-package com.eindopdracht.DJCorner.models;
+package com.eindopdracht.DJCorner.dtos;
 
-import jakarta.persistence.*;
+import com.eindopdracht.DJCorner.models.PlaylistTrack;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "playlists")
-public class Playlist {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PlaylistResponseDto {
     private Long id;
     private String title;
     private String genre;
-
-    @ManyToMany
-    @JoinTable(
-            name = "playlists_tracks",
-            joinColumns = @JoinColumn(name = "playlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "track_id")
-    )
     private List<PlaylistTrack> track = new ArrayList<>();
-
-    public Playlist() { }
-
-    public Playlist(Long id, String title, String genre, List<PlaylistTrack> track) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-        this.track = track;
-    }
 
     public Long getId() {
         return id;
