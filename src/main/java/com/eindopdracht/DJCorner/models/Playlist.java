@@ -22,15 +22,15 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id")
     )
-    private List<PlaylistTrack> track = new ArrayList<>();
+    private List<PlaylistTrack> tracks = new ArrayList<>();
 
     public Playlist() { }
 
-    public Playlist(Long id, String title, String genre, List<PlaylistTrack> track) {
+    public Playlist(Long id, String title, String genre, List<PlaylistTrack> tracks) {
         this.id = id;
         this.title = title;
         this.genre = genre;
-        this.track = track;
+        this.tracks = tracks;
     }
 
     public Long getId() {
@@ -57,11 +57,11 @@ public class Playlist {
         this.genre = genre;
     }
 
-    public List<PlaylistTrack> getTrack() {
-        return track;
+    public List<PlaylistTrack> getTracks() {
+        return tracks;
     }
 
-    public void setTrack(List<PlaylistTrack> track) {
-        this.track = track;
+    public void setTracks(List<PlaylistTrack> tracks) {
+        this.tracks = tracks;
     }
 }

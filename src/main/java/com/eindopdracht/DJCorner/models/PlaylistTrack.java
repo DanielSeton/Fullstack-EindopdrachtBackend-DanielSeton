@@ -25,8 +25,8 @@ public class PlaylistTrack {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
-    private List<Playlist> playlist = new ArrayList<>();
+    @ManyToMany (mappedBy = "tracks")
+    private List<Playlist> playlists = new ArrayList<>();
 
     public PlaylistTrack() { }
 
@@ -37,7 +37,7 @@ public class PlaylistTrack {
         this.musicFileType = musicFileType;
         this.title = title;
         this.user = user;
-        this.playlist = playlist;
+        this.playlists = playlists;
     }
 
     public Long getId() {
@@ -88,11 +88,11 @@ public class PlaylistTrack {
         this.user = user;
     }
 
-    public List<Playlist> getPlaylist() {
-        return playlist;
+    public List<Playlist> getPlaylists() {
+        return playlists;
     }
 
-    public void setPlaylist(List<Playlist> playlist) {
-        this.playlist = playlist;
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
     }
 }

@@ -9,7 +9,7 @@ public class PlaylistResponseDto {
     private Long id;
     private String title;
     private String genre;
-    private List<PlaylistTrack> track = new ArrayList<>();
+    private List<Long> tracksIds;
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class PlaylistResponseDto {
         this.genre = genre;
     }
 
-    public List<PlaylistTrack> getTrack() {
-        return track;
+    public List<Long> getTracksIds() {
+        return tracksIds;
     }
 
-    public void setTrack(List<PlaylistTrack> track) {
-        this.track = track;
+    public void setTracksIds(List<Long> tracksIds) {
+        this.tracksIds = tracksIds;
     }
 }

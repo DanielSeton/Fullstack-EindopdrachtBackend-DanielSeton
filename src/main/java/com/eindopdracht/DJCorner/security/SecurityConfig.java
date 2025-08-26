@@ -89,7 +89,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/shows").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("ADMIN", "STAFF")
 
-                        .anyRequest().denyAll()
+                        //todo security weer goed zetten na pushen van playlists
+                        .anyRequest().permitAll()
                 )
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())

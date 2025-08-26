@@ -49,7 +49,16 @@ public class DataLoader implements CommandLineRunner {
         loadSubmission("test_track.mp3", "PartyRock", 190, 5L, List.of("Rock", "No vocals", "Techno"));
         loadSubmission("test_track.mp3", "Demo Track2", 128, 2L, List.of("Soul", "EDM"));
 
-        loadPlaylistTrack("test_track.mp3", "TestTrackish", 5L);
+        PlaylistTrack track1 = loadPlaylistTrack("test_track.mp3", "TestTrackish", 5L);
+        PlaylistTrack track2 = loadPlaylistTrack("test_track.mp3", "Testmagoo", 2L);
+        PlaylistTrack track3 = loadPlaylistTrack("test_track.mp3", "TesteryTest", 5L);
+
+        Playlist playlist = new Playlist();
+        playlist.setTitle("Dummy Playlist");
+        playlist.setGenre("Techno");
+        playlist.setTracks(List.of(track1, track2, track3));
+
+        playlistRepository.save(playlist);
     }
 
     private void loadSubmission(String fileName, String title, int bpm, Long userId, List<String> tagNames) throws IOException {
@@ -79,7 +88,7 @@ public class DataLoader implements CommandLineRunner {
         submissionRepository.save(submission);
     }
 
-    private void loadPlaylistTrack(String fileName, String title, Long userId) throws IOException {
+    private PlaylistTrack loadPlaylistTrack(String fileName, String title, Long userId) throws IOException {
         ClassPathResource audioFile = new ClassPathResource("audio/" + fileName);
         byte[] audioBytes = StreamUtils.copyToByteArray(audioFile.getInputStream());
 
@@ -94,6 +103,6 @@ public class DataLoader implements CommandLineRunner {
         playlistTrack.setMusicFileName(fileName);
         playlistTrack.setMusicFileType("audio/mp3");
 
-        playlistTrackRepository.save(playlistTrack);
+        return playlistTrackRepository.save(playlistTrack);
     }
 }

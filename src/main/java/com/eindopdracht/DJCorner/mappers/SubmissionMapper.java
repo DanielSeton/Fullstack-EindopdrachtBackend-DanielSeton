@@ -6,7 +6,9 @@ import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.models.Tag;
+import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.services.TagService;
+import com.eindopdracht.DJCorner.services.UserService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,9 +17,11 @@ import java.util.List;
 public class SubmissionMapper {
 
     private final TagService tagService;
+    private final UserService userService;
 
-    public SubmissionMapper(TagService tagService) {
+    public SubmissionMapper(TagService tagService, UserService userService) {
         this.tagService = tagService;
+        this.userService = userService;
     }
 
     public Submission toEntity(SubmissionRequestDto submissionRequestDto) {
@@ -38,6 +42,11 @@ public class SubmissionMapper {
                 .toList();
 
         submission.setTags(tagObjects);
+
+        if (submissionRequestDto.getUserId() != null) {
+            User user = userService.getSingleUser(submissionRequestDto.getUserId());
+            submission.setUser(user);
+        }
 
         return submission;
     }
@@ -76,6 +85,9 @@ public class SubmissionMapper {
         }
 
         submissionResponseDto.setAudioDownloadUrl("submissions/" + submission.getId() + "/audio");
+
+        submissionResponseDto.setUserId(submission.getUser().getId());
+
 
         return submissionResponseDto;
     }
