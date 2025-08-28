@@ -3,21 +3,17 @@ package com.eindopdracht.DJCorner.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SubmissionRequestDto {
+public class PlaylistTrackRequestDto {
     @NotBlank
     private String title;
-    private Long userId;
-    private String artistName;
-    private Integer bpm;
-
     private String musicFileName;
     private String musicFileType;
 
     @NotEmpty
-    private List<String> tags = new ArrayList<>();
+    private Long userId;
+
+    @NotEmpty
+    private Long playlistId;
 
 
     public String getTitle() {
@@ -26,30 +22,6 @@ public class SubmissionRequestDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getArtistName() {
-        return artistName;
-    }
-
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
-    }
-
-    public Integer getBpm() {
-        return bpm;
-    }
-
-    public void setBpm(Integer bpm) {
-        this.bpm = bpm;
     }
 
     public String getMusicFileName() {
@@ -68,11 +40,19 @@ public class SubmissionRequestDto {
         this.musicFileType = musicFileType;
     }
 
-    public List<String> getTags() {
-        return tags;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(Long playlistId) {
+        this.playlistId = playlistId;
     }
 }

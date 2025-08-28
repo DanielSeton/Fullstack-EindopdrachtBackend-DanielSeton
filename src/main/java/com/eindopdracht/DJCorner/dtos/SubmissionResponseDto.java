@@ -1,15 +1,12 @@
 package com.eindopdracht.DJCorner.dtos;
 
-import com.eindopdracht.DJCorner.models.Feedback;
-import com.eindopdracht.DJCorner.models.Tag;
-import com.eindopdracht.DJCorner.models.User;
-
 import java.time.LocalDate;
 import java.util.List;
 
 public class SubmissionResponseDto {
     private Long id;
     private String title;
+    private Long userId;
     private String artistName;
     private LocalDate uploadDate;
     private Integer bpm;
@@ -35,6 +32,14 @@ public class SubmissionResponseDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getArtistName() {

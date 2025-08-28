@@ -1,22 +1,17 @@
 package com.eindopdracht.DJCorner.dtos;
 
+import org.hibernate.validator.constraints.URL;
+
 import java.time.LocalDate;
 
-public class ShowResponseDto {
-    private Long id;
+public class ShowPatchRequestDto {
     private String name;
     private String location;
     private LocalDate date;
+    @URL
     private String website;
+    @URL
     private String ticketSite;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

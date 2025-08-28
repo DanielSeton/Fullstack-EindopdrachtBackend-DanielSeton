@@ -21,7 +21,7 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    public List<TagResponseDto> getAllTags() {
+    public List<TagResponseDto> getTags() {
         List<Tag> tagsList = tagRepository.findAll();
         List<TagResponseDto> tagResponseDtoList = new ArrayList<>();
 

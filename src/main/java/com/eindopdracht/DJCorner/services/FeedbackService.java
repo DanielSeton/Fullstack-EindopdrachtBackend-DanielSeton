@@ -41,24 +41,28 @@ public class FeedbackService {
         return feedbackResponseDtoList;
     }
 
-    public Feedback getSingleFeedback(Long id) {
+    public Feedback getFeedback(Long id) {
         return feedbackRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback with id: " + id + " not found"));
     }
 
-    @Transactional
     public List<Feedback> getFeedbackByStatus(Status status) {
         return feedbackRepository.findByStatus(status);
     }
 
-    @Transactional
     public void deleteFeedback(Long feedbackId) {
         Feedback feedback = feedbackRepository.findById(feedbackId).orElseThrow(() -> new ResourceNotFoundException("Feedback with id: " + feedbackId + " not found"));
 
         Submission submission = submissionRepository.findByFeedbackId(feedbackId).orElseThrow(() -> new ResourceNotFoundException("Submission with Feedback id: " + feedbackId + " not found"));
 
-        submission.setFeedback(null);
-        submissionRepository.save(submission);
-
         feedbackRepository.deleteById(feedbackId);
+
+        Feedback newFeedback = new Feedback();
+        newFeedback.setStatus(Status.NO_FEEDBACK);
+        newFeedback.setFeedback("");
+
+        feedbackRepository.save(newFeedback);
+
+        submission.setFeedback(newFeedback);
+        submissionRepository.save(submission);
     }
 }

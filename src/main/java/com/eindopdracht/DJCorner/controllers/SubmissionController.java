@@ -10,6 +10,8 @@ import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,8 +99,11 @@ public class SubmissionController {
     @PostMapping
     public ResponseEntity<SubmissionResponseDto> createSubmission(
             @RequestPart("file") MultipartFile file,
-            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto,
-            @AuthenticationPrincipal MyUserDetails userDetails) {
+            @RequestPart ("metadata") String metadataJson,
+            @AuthenticationPrincipal MyUserDetails userDetails) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        SubmissionRequestDto submissionRequestDto = objectMapper.readValue(metadataJson, SubmissionRequestDto.class);
 
         Submission submission = submissionService.createSubmission(file, submissionRequestDto, userDetails);
         SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
@@ -111,9 +116,11 @@ public class SubmissionController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteSubmission(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteSubmission(
+            @PathVariable Long id,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
 
-        submissionService.deleteSingleSubmission(id);
+        submissionService.deleteSubmission(id, userDetails);
 
         return ResponseEntity.noContent().build();
     }
@@ -121,9 +128,16 @@ public class SubmissionController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<SubmissionResponseDto> updateSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
+    public ResponseEntity<SubmissionResponseDto> updateSubmission(
+            @PathVariable Long id,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart("metadata") String metadataJson,
+            @AuthenticationPrincipal MyUserDetails userDetails) throws JsonProcessingException {
 
-        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
+        ObjectMapper objectMapper = new ObjectMapper();
+        SubmissionRequestDto submissionRequestDto = objectMapper.readValue(metadataJson, SubmissionRequestDto.class);
+
+        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto, file, userDetails);
 
         return ResponseEntity.ok(updatedSubmission);
     }
@@ -131,8 +145,11 @@ public class SubmissionController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<SubmissionResponseDto> patchSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
-        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
+    public ResponseEntity<SubmissionResponseDto> patchSubmission(
+            @PathVariable Long id,
+            @RequestBody SubmissionRequestDto submissionRequestDto,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+        SubmissionResponseDto updatedSubmission = submissionService.patchSubmission(id, submissionRequestDto, userDetails);
         return ResponseEntity.ok(updatedSubmission);
     }
 

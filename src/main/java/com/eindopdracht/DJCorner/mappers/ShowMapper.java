@@ -3,7 +3,9 @@ package com.eindopdracht.DJCorner.mappers;
 import com.eindopdracht.DJCorner.dtos.ShowRequestDto;
 import com.eindopdracht.DJCorner.dtos.ShowResponseDto;
 import com.eindopdracht.DJCorner.models.Show;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ShowMapper {
 
     public static Show toEntity(ShowRequestDto showRequestDto) {
@@ -21,12 +23,12 @@ public class ShowMapper {
     public static ShowResponseDto toResponseDto(Show show) {
         ShowResponseDto showResponseDto = new ShowResponseDto();
 
-        showResponseDto.id = show.getId();
-        showResponseDto.name = show.getName();
-        showResponseDto.location = show.getLocation();
-        showResponseDto.date = show.getDate();
-        showResponseDto.website = show.getWebsite();
-        showResponseDto.ticketSite = show.getTicketSite();
+        showResponseDto.setId(show.getId());
+        showResponseDto.setName(show.getName());
+        showResponseDto.setLocation(show.getLocation());
+        showResponseDto.setDate(show.getDate());
+        showResponseDto.setWebsite(show.getWebsite());
+        showResponseDto.setTicketSite(show.getTicketSite());
 
         return showResponseDto;
     }

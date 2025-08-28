@@ -7,7 +7,7 @@ public class TagRequestDto {
 
     @NotBlank
     @Size(max = 20)
-    public String name;
+    private String name;
 
     public String getName() {
         return name;

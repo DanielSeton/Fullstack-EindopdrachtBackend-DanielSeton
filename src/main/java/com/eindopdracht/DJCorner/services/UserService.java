@@ -1,11 +1,14 @@
 package com.eindopdracht.DJCorner.services;
 
+import com.eindopdracht.DJCorner.dtos.UserUpdateRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserResponseDto;
+import com.eindopdracht.DJCorner.exceptions.AccessDeniedException;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.UserMapper;
 import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.repositories.UserRepository;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,22 +29,12 @@ public class UserService {
     }
 
     public User createUser(UserRequestDto userRequestDto) {
-        String role = userRequestDto.getRole();
-
-        if (role != null && !ALLOWED_ROLES.contains(role.toUpperCase())) {
-            throw new ResourceNotFoundException("Invalid role: " + role);
-        }
-
-        if (role == null || role.isBlank()) {
-            userRequestDto.setRole("USER");
-        } else {
-            userRequestDto.setRole(role.toUpperCase());
-        }
+        userRequestDto.setRole("USER");
 
         User user = UserMapper.toEntity(userRequestDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return this.userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User createUserWithRole(UserRequestDto userRequestDto) {
@@ -62,7 +55,14 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    public List<UserResponseDto> getAllUsers(){
+    public List<UserResponseDto> getUsers(MyUserDetails userDetails){
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            throw new AccessDeniedException("You are not authorized to view all users.");
+        }
+
         List<User> userList = userRepository.findAll();
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
@@ -73,15 +73,40 @@ public class UserService {
         return userResponseDtoList;
     }
 
-    public User getSingleUser(Long id) {
-        return this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
+    public UserResponseDto getUserById(Long id, MyUserDetails userDetails) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
+
+        boolean isOwner = user.getUsername().equals(userDetails.getUsername());
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You are not authorized to view this user.");
+        }
+
+        return UserMapper.toResponseDto(user);
     }
 
-    public User getUserByUsername(String username) {
-        return this.userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User with name: " + username + " not found"));
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
     }
 
-    public void deleteSingleUser(Long id) {
+    public UserResponseDto getUserByUsername(String username, MyUserDetails userDetails) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User with name: " + username + " not found"));
+
+        boolean isOwner = user.getUsername().equals(userDetails.getUsername());
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You are not authorized to view this user.");
+        }
+
+        return UserMapper.toResponseDto(user);
+    }
+
+    public void deleteUser(Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
 
         if (userOptional.isEmpty()) {
@@ -91,22 +116,29 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) {
+    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userRequestDto, MyUserDetails userDetails) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
+
+        if (!user.getUsername().equals(userDetails.getUsername())) {
+            throw new AccessDeniedException("You are not allowed to update this user.");
+        }
 
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(userRequestDto.getPassword());
 
-        User updatedUser = this.userRepository.save(user);
+        User updatedUser = userRepository.save(user);
 
         return UserMapper.toResponseDto(updatedUser);
 
     }
 
-    public UserResponseDto patchUser(Long id,UserRequestDto userRequestDto) {
+    public UserResponseDto patchUser(Long id, UserUpdateRequestDto userRequestDto, MyUserDetails userDetails) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
 
+        if (!user.getUsername().equals(userDetails.getUsername())) {
+            throw new AccessDeniedException("You are not allowed to update this user.");
+        }
 
         if (userRequestDto.getUsername() != null) {
             user.setUsername(userRequestDto.getUsername());
@@ -119,6 +151,7 @@ public class UserService {
         }
 
         User returnUser = userRepository.save(user);
+
         return UserMapper.toResponseDto(returnUser);
     }
 

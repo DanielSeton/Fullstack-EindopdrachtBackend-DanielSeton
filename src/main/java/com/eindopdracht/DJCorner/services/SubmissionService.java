@@ -4,6 +4,7 @@ import com.eindopdracht.DJCorner.dtos.FeedbackUpdateDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionRequestDto;
 import com.eindopdracht.DJCorner.dtos.SubmissionResponseDto;
 import com.eindopdracht.DJCorner.enums.Status;
+import com.eindopdracht.DJCorner.exceptions.AccessDeniedException;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Feedback;
@@ -80,28 +81,50 @@ public class SubmissionService {
         return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);
     }
 
-    public void deleteSingleSubmission(Long id) {
-        Optional<Submission> submissionOptional = this.submissionRepository.findById(id);
+    public void deleteSubmission(Long id, MyUserDetails userDetails) {
+        Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id " + id + " not found"));
 
-        if (submissionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Submission with id: " + id + " not found");
+        boolean isOwner = submission.getUser().getUsername().equals(userDetails.getUsername());
+        boolean isStaffOrAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ROLE_STAFF"));
+
+        if (!isOwner && !isStaffOrAdmin) {
+            throw new AccessDeniedException("You are not authorized to delete this submission.");
         }
 
         submissionRepository.deleteById(id);
     }
 
-    public SubmissionResponseDto updateSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
+    public SubmissionResponseDto updateSubmission(Long id, SubmissionRequestDto submissionRequestDto, MultipartFile file, MyUserDetails userDetails) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
+
+        if (!submission.getUser().getUsername().equals(userDetails.getUsername())) {
+            throw new AccessDeniedException("You are not allowed to update this submission.");
+        }
 
         submissionMapper.updateEntity(submission, submissionRequestDto);
 
-        Submission updatedSubmission = this.submissionRepository.save(submission);
+        if (file != null && !file.isEmpty()) {
+            try {
+                submission.setMusicFile(file.getBytes());
+                submission.setMusicFileName(file.getOriginalFilename());
+                submission.setMusicFileType(file.getContentType());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to read uploaded file", e);
+            }
+        }
+
+        Submission updatedSubmission = submissionRepository.save(submission);
 
         return SubmissionMapper.toSubmissionResponseDto(updatedSubmission);
     }
 
-    public SubmissionResponseDto patchSubmission(Long id, SubmissionRequestDto submissionRequestDto) {
+    public SubmissionResponseDto patchSubmission(Long id, SubmissionRequestDto submissionRequestDto, MyUserDetails userDetails) {
         Submission submission = submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
+
+        if (!submission.getUser().getUsername().equals(userDetails.getUsername())) {
+            throw new AccessDeniedException("You are not allowed to update this submission.");
+        }
 
         submissionMapper.patchEntity(submission, submissionRequestDto);
 

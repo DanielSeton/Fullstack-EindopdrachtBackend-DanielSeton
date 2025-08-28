@@ -1,5 +1,6 @@
 package com.eindopdracht.DJCorner.services;
 
+import com.eindopdracht.DJCorner.dtos.ShowPatchRequestDto;
 import com.eindopdracht.DJCorner.dtos.ShowRequestDto;
 import com.eindopdracht.DJCorner.dtos.ShowResponseDto;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
@@ -25,7 +26,7 @@ public class ShowService {
         return this.showRepository.save(ShowMapper.toEntity(showRequestDto));
     }
 
-    public List<ShowResponseDto> getAllShows() {
+    public List<ShowResponseDto> getShows() {
         List<Show> showList = showRepository.findAll();
         List<ShowResponseDto> showResponseDtoList = new ArrayList<>();
 
@@ -37,7 +38,7 @@ public class ShowService {
         return showResponseDtoList;
     }
 
-    public Show getSingleShow(Long id) {
+    public Show getShowById(Long id) {
         return this.showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Show with id: " + id + " not found"));
     }
 
@@ -65,23 +66,23 @@ public class ShowService {
         return ShowMapper.toResponseDto(updatedShow);
     }
 
-    public ShowResponseDto patchShow(Long id, ShowRequestDto showRequestDto) {
+    public ShowResponseDto patchShow(Long id, ShowPatchRequestDto showDto) {
         Show show = showRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Show with id: " + id + " not found"));
 
-        if (showRequestDto.getName() != null) {
-            show.setName(showRequestDto.getName());
+        if (showDto.getName() != null) {
+            show.setName(showDto.getName());
         }
-        if (showRequestDto.getLocation() != null) {
-            show.setLocation(showRequestDto.getLocation());
+        if (showDto.getLocation() != null) {
+            show.setLocation(showDto.getLocation());
         }
-        if (showRequestDto.getDate() != null) {
-            show.setDate(showRequestDto.getDate());
+        if (showDto.getDate() != null) {
+            show.setDate(showDto.getDate());
         }
-        if (showRequestDto.getWebsite() != null) {
-            show.setWebsite(showRequestDto.getWebsite());
+        if (showDto.getWebsite() != null) {
+            show.setWebsite(showDto.getWebsite());
         }
-        if (showRequestDto.getTicketSite() != null) {
-            show.setTicketSite(showRequestDto.getTicketSite());
+        if (showDto.getTicketSite() != null) {
+            show.setTicketSite(showDto.getTicketSite());
         }
 
         Show returnShow = showRepository.save(show);

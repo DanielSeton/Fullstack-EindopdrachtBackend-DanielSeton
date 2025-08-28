@@ -30,6 +30,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<PlaylistTrack> playlistTracks = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -77,5 +79,13 @@ public class User {
 
     public void setSubmissions(List<Submission> submissions) {
         this.submissions = submissions;
+    }
+
+    public List<PlaylistTrack> getPlaylistTracks() {
+        return playlistTracks;
+    }
+
+    public void setPlaylistTracks(List<PlaylistTrack> playlistTracks) {
+        this.playlistTracks = playlistTracks;
     }
 }
