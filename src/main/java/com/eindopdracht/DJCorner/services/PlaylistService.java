@@ -33,6 +33,7 @@ public class PlaylistService {
         this.playlistTrackRepository = playlistTrackRepository;
     }
 
+    @Transactional
     public Playlist getPlaylistById(long id) {
         return this.playlistRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
     }
@@ -80,6 +81,7 @@ public class PlaylistService {
         playlistRepository.save(playlist);
     }
 
+    @Transactional
     public PlaylistResponseDto updatePlaylist(Long id, PlaylistRequestDto playlistRequestDto) {
         Playlist playlist = playlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Playlist with id: " + id + " not found"));
@@ -91,6 +93,7 @@ public class PlaylistService {
         return PlaylistMapper.toPlaylistResponseDto(updatedPlaylist);
     }
 
+    @Transactional
     public PlaylistResponseDto patchPlaylist(long id, PlaylistRequestDto playlistRequestDto) {
         Playlist playlist = playlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Playlist with id: " + id + " not found"));

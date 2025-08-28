@@ -12,6 +12,9 @@ import com.eindopdracht.DJCorner.models.PlaylistTrack;
 import com.eindopdracht.DJCorner.repositories.PlaylistRepository;
 import com.eindopdracht.DJCorner.services.PlaylistService;
 import com.eindopdracht.DJCorner.services.PlaylistTrackService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,13 +38,12 @@ public class PlaylistController {
         this.playlistTrackmapper = playlistTrackmapper;
     }
 
-    //todo playlist tracks controller maken en put/patch en delete daarin stopppen
-
     @GetMapping
     public ResponseEntity<List<PlaylistResponseDto>> getAllPlaylists() {
         return ResponseEntity.ok(playlistService.getAllPlaylists());
     }
 
+    @Transactional
     @GetMapping("/{id}")
     public ResponseEntity<PlaylistResponseDto> getPlaylistById(@PathVariable Long id) {
         return ResponseEntity.ok(PlaylistMapper.toPlaylistResponseDto(playlistService.getPlaylistById(id)));
@@ -53,6 +55,7 @@ public class PlaylistController {
         return ResponseEntity.ok(tracks);
     }
 
+    @Transactional
     @GetMapping("{playlistId}/tracks/{trackId}")
     public ResponseEntity<PlaylistTrackResponseDto> getTrackFromPlaylist(
             @PathVariable Long playlistId,
@@ -97,11 +100,15 @@ public class PlaylistController {
     @PostMapping ("/{playlistId}")
     public ResponseEntity<PlaylistTrackResponseDto> addTrackToPlaylist(
             @PathVariable Long playlistId,
-            @RequestPart("metadata") PlaylistTrackRequestDto playlistTrackRequestDto,
-            @RequestPart("file") MultipartFile file) {
-        playlistTrackRequestDto.setPlaylistId(playlistId);
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("metadata") String metadataJson) throws JsonProcessingException {
 
-        PlaylistTrack track = playlistTrackService.createTrack(playlistTrackRequestDto, file);
+        ObjectMapper objectMapper = new ObjectMapper();
+        PlaylistTrackRequestDto trackRequestDto = objectMapper.readValue(metadataJson, PlaylistTrackRequestDto.class);
+
+        trackRequestDto.setPlaylistId(playlistId);
+
+        PlaylistTrack track = playlistTrackService.createTrack(trackRequestDto, file);
         PlaylistTrackResponseDto responseDto = playlistTrackmapper.toDto(track);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);

@@ -14,6 +14,7 @@ public class PlaylistTrack {
     private Long id;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     private byte[] musicFile;
 
     private String musicFileName;
