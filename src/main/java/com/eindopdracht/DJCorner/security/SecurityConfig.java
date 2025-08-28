@@ -63,7 +63,11 @@ public class SecurityConfig {
                         .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
 
                         //submissions
-                        .requestMatchers("/submissions/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/submissions/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/submissions/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/submissions/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/submissions/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PATCH, "/submissions/**").hasRole("USER")
 
                         //feedback
                         .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
@@ -72,9 +76,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/feedback").hasAnyRole("ADMIN", "STAFF")
 
                         //playlists
-                        .requestMatchers(HttpMethod.GET, "/playlists").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/playlists").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.DELETE, "/playlists").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.GET, "/playlists/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/playlists/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/playlists/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PATCH, "/playlists/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/playlists/**").hasAnyRole("ADMIN", "STAFF")
 
                         //tags
                         .requestMatchers(HttpMethod.GET, "/tags").authenticated()
@@ -89,8 +95,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/shows").hasAnyRole("ADMIN", "STAFF")
                         .requestMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("ADMIN", "STAFF")
 
-                        //todo security weer goed zetten na pushen van playlists
-                        .anyRequest().permitAll()
+                        .anyRequest().denyAll()
                 )
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())

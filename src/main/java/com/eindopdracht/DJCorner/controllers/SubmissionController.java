@@ -10,6 +10,8 @@ import com.eindopdracht.DJCorner.mappers.SubmissionMapper;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -97,8 +99,11 @@ public class SubmissionController {
     @PostMapping
     public ResponseEntity<SubmissionResponseDto> createSubmission(
             @RequestPart("file") MultipartFile file,
-            @RequestPart ("metadata") @Valid SubmissionRequestDto submissionRequestDto,
-            @AuthenticationPrincipal MyUserDetails userDetails) {
+            @RequestPart ("metadata") String metadataJson,
+            @AuthenticationPrincipal MyUserDetails userDetails) throws JsonProcessingException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        SubmissionRequestDto submissionRequestDto = objectMapper.readValue(metadataJson, SubmissionRequestDto.class);
 
         Submission submission = submissionService.createSubmission(file, submissionRequestDto, userDetails);
         SubmissionResponseDto submissionResponseDto = SubmissionMapper.toSubmissionResponseDto(submission);
@@ -132,7 +137,7 @@ public class SubmissionController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<SubmissionResponseDto> patchSubmission(@PathVariable Long id, @RequestBody SubmissionRequestDto submissionRequestDto) {
-        SubmissionResponseDto updatedSubmission = submissionService.updateSubmission(id, submissionRequestDto);
+        SubmissionResponseDto updatedSubmission = submissionService.patchSubmission(id, submissionRequestDto);
         return ResponseEntity.ok(updatedSubmission);
     }
 

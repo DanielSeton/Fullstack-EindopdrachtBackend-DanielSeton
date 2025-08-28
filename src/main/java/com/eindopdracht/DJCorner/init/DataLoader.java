@@ -1,5 +1,6 @@
 package com.eindopdracht.DJCorner.init;
 
+import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.models.*;
 import com.eindopdracht.DJCorner.repositories.*;
@@ -32,22 +33,22 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadSubmission("test_track.mp3", "Demo Track", 128, 1L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Experiment", 320, 2L, List.of("Dubstep", "Drill", "Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Coole beats", 200, 1L, List.of("Pop", "Punk", "Hardcore"));
-        loadSubmission("test_track.mp3", "Insane funk", 128, 5L, List.of("Jazz", "Soul", "House", "Vocals included"));
-        loadSubmission("test_track.mp3", "Sicke track", 600, 5L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Beatssample2", 240, 2L, List.of("Dubstep"));
-        loadSubmission("test_track.mp3", "PartyRock", 190, 5L, List.of("Rock", "No vocals", "Techno"));
-        loadSubmission("test_track.mp3", "Demo Track2", 128, 2L, List.of("Soul", "EDM"));
-        loadSubmission("test_track.mp3", "Demo Track", 128, 1L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Experiment", 320, 2L, List.of("Dubstep", "Drill", "Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Coole beats", 200, 1L, List.of("Pop", "Punk", "Hardcore"));
-        loadSubmission("test_track.mp3", "Insane funk", 128, 5L, List.of("Jazz", "Soul", "House", "Vocals included"));
-        loadSubmission("test_track.mp3", "Sicke track", 600, 5L, List.of("Boogie", "EDM"));
-        loadSubmission("test_track.mp3", "Beatssample2", 240, 2L, List.of("Dubstep"));
-        loadSubmission("test_track.mp3", "PartyRock", 190, 5L, List.of("Rock", "No vocals", "Techno"));
-        loadSubmission("test_track.mp3", "Demo Track2", 128, 2L, List.of("Soul", "EDM"));
+        loadSubmission("test_track.mp3", "Demo Track", 128, 1L, List.of("Boogie", "EDM"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Experiment", 320, 2L, List.of("Dubstep", "Drill", "Boogie", "EDM"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Coole beats", 200, 1L, List.of("Pop", "Punk", "Hardcore"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Insane funk", 128, 5L, List.of("Jazz", "Soul", "House", "Vocals included"), Status.IN_CONSIDERATION, "We like the beat, but the tone is new for us. We need to discuss this and we'll get back to you.");
+        loadSubmission("test_track.mp3", "Sicke track", 600, 5L, List.of("Boogie", "EDM"), Status.REJECTED, "Style feels off compared to our current programming direction.");
+        loadSubmission("test_track.mp3", "Solar Drift", 240, 2L, List.of("Dubstep"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "PartyRock", 190, 5L, List.of("Rock", "No vocals", "Techno"), Status.IN_CONSIDERATION, "The drop feels underwhelming. Consider reworking it for more impact.");
+        loadSubmission("test_track.mp3", "Demo Track2", 128, 2L, List.of("Soul", "EDM"), Status.IN_CONSIDERATION, "You’re close. Revisit the arrangement and bring out the key elements more.");
+        loadSubmission("test_track.mp3", "Echo Pulse", 128, 1L, List.of("Boogie", "EDM"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Experiment", 320, 2L, List.of("Dubstep", "Drill", "Boogie", "EDM"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Coole beats", 200, 1L, List.of("Pop", "Punk", "Hardcore"), Status.APPROVED, "Professional quality and genre-fitting. Definitely show-ready.");
+        loadSubmission("test_track.mp3", "Neon Mirage", 128, 5L, List.of("Jazz", "Soul", "House", "Vocals included"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Midnight Circuit", 600, 5L, List.of("Boogie", "EDM"), Status.APPROVED, "Solid beat and strong transitions. Adds value to the overall vibe");
+        loadSubmission("test_track.mp3", "Beatssample2", 240, 2L, List.of("Dubstep"), Status.NO_FEEDBACK, "");
+        loadSubmission("test_track.mp3", "Mono Drive", 190, 5L, List.of("Rock", "No vocals", "Techno"), Status.REJECTED, "The production lacks clarity, and the beat doesn't quite hold up.");
+        loadSubmission("test_track.mp3", "Tunnel Vision", 128, 2L, List.of("Soul", "EDM"), Status.NO_FEEDBACK, "");
 
         PlaylistTrack track1 = loadPlaylistTrack("test_track.mp3", "TestTrackish", 5L);
         PlaylistTrack track2 = loadPlaylistTrack("test_track.mp3", "Testmagoo", 2L);
@@ -61,11 +62,13 @@ public class DataLoader implements CommandLineRunner {
         playlistRepository.save(playlist);
     }
 
-    private void loadSubmission(String fileName, String title, int bpm, Long userId, List<String> tagNames) throws IOException {
+    private void loadSubmission(String fileName, String title, int bpm, Long userId, List<String> tagNames, Status status, String feedbackText) throws IOException {
         ClassPathResource audioFile = new ClassPathResource("audio/" + fileName);
         byte[] audioBytes = StreamUtils.copyToByteArray(audioFile.getInputStream());
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Object with id: " + userId + " not found"));
+
+        Feedback feedback = new Feedback();
 
         Submission submission = new Submission();
         submission.setTitle(title);
@@ -76,8 +79,11 @@ public class DataLoader implements CommandLineRunner {
         submission.setMusicFileName(fileName);
         submission.setMusicFileType("audio/mp3");
 
+        feedback.setStatus(status);
+        feedback.setFeedback(feedbackText != null ? feedbackText : "");
+        submission.setFeedback(feedback);
+
         submission.setUser(user);
-        submission.setFeedback(null);
 
         List<Tag> tags = tagNames.stream()
                 .map(tagName -> tagRepository.findByName(tagName)
