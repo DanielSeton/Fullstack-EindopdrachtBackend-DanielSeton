@@ -38,10 +38,9 @@ public class FeedbackController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FeedbackResponseDto> getFeedbackById(@PathVariable Long id) {
-        return ResponseEntity.ok(FeedbackMapper.toFeedbackResponseDto(this.feedbackService.getSingleFeedback(id)));
+        return ResponseEntity.ok(FeedbackMapper.toFeedbackResponseDto(this.feedbackService.getFeedback(id)));
     }
-
-    @Transactional
+    
     @GetMapping("/status/{status}")
     public ResponseEntity<List<FeedbackResponseDto>> getFeedbackByStatus(@PathVariable Status status) {
         List<Feedback> feedbackList = feedbackService.getFeedbackByStatus(status);

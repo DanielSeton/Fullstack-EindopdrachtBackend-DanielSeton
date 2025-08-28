@@ -59,8 +59,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/users").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                         .requestMatchers("/users/register").hasAnyRole("STAFF", "ADMIN")
+
+                        //feedback
+                        .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/feedback/status/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/feedback/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/feedback/**").hasAnyRole("ADMIN", "STAFF")
 
                         //submissions
                         .requestMatchers(HttpMethod.GET, "/submissions/**").authenticated()
@@ -68,12 +74,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/submissions/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/submissions/**").hasRole("USER")
                         .requestMatchers(HttpMethod.PATCH, "/submissions/**").hasRole("USER")
-
-                        //feedback
-                        .requestMatchers(HttpMethod.PATCH, "/submissions/*/feedback").hasAnyRole("STAFF", "ADMIN")
-                        .requestMatchers("/feedback/status/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/feedback").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/feedback").hasAnyRole("ADMIN", "STAFF")
 
                         //playlists
                         .requestMatchers(HttpMethod.GET, "/playlists/**").permitAll()
@@ -83,17 +83,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/playlists/**").hasAnyRole("ADMIN", "STAFF")
 
                         //tags
-                        .requestMatchers(HttpMethod.GET, "/tags").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/tags").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/tags/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/tags/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/tags").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.PUT, "/tags").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/tags/**").hasAnyRole("ADMIN", "STAFF")
 
                         //shows
-                        .requestMatchers(HttpMethod.GET, "/shows").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/shows").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.PUT, "/shows").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.PATCH, "/shows").hasAnyRole("ADMIN", "STAFF")
-                        .requestMatchers(HttpMethod.DELETE, "/shows").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.GET, "/shows/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/shows/filter").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/shows/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PUT, "/shows/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.PATCH, "/shows/**").hasAnyRole("ADMIN", "STAFF")
+                        .requestMatchers(HttpMethod.DELETE, "/shows/**").hasAnyRole("ADMIN", "STAFF")
 
                         .anyRequest().denyAll()
                 )

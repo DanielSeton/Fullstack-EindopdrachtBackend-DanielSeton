@@ -5,14 +5,10 @@ import com.eindopdracht.DJCorner.dtos.PlaylistTrackResponseDto;
 import com.eindopdracht.DJCorner.models.Playlist;
 import com.eindopdracht.DJCorner.models.PlaylistTrack;
 import com.eindopdracht.DJCorner.models.User;
-import com.eindopdracht.DJCorner.services.PlaylistService;
-import com.eindopdracht.DJCorner.services.PlaylistTrackService;
 import com.eindopdracht.DJCorner.services.UserService;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PlaylistTrackmapper {
@@ -29,7 +25,7 @@ public class PlaylistTrackmapper {
         playlistTrack.setMusicFileName(playlistTrackRequestDto.getMusicFileName());
         playlistTrack.setMusicFileType(playlistTrackRequestDto.getMusicFileType());
 
-        User user = userService.getSingleUser(playlistTrackRequestDto.getUserId());
+        User user = userService.findUserById(playlistTrackRequestDto.getUserId());
         playlistTrack.setUser(user);
 
         return playlistTrack;

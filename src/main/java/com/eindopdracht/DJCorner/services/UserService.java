@@ -2,10 +2,12 @@ package com.eindopdracht.DJCorner.services;
 
 import com.eindopdracht.DJCorner.dtos.UserRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserResponseDto;
+import com.eindopdracht.DJCorner.exceptions.AccessDeniedException;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
 import com.eindopdracht.DJCorner.mappers.UserMapper;
 import com.eindopdracht.DJCorner.models.User;
 import com.eindopdracht.DJCorner.repositories.UserRepository;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,8 +75,23 @@ public class UserService {
         return userResponseDtoList;
     }
 
-    public User getSingleUser(Long id) {
-        return this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found"));
+    public UserResponseDto getUserById(Long id, MyUserDetails userDetails) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
+
+        boolean isOwner = user.getUsername().equals(userDetails.getUsername());
+        boolean isAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You are not authorized to view this user.");
+        }
+
+        return UserMapper.toResponseDto(user);
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 
     public User getUserByUsername(String username) {

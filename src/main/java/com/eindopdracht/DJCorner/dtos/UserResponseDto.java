@@ -1,10 +1,10 @@
 package com.eindopdracht.DJCorner.dtos;
 
 public class UserResponseDto {
-    public Long id;
-    public String username;
-    public String email;
-    public String role;
+    private Long id;
+    private String role;
+    private String username;
+    private String email;
 
     public Long getId() {
         return id;

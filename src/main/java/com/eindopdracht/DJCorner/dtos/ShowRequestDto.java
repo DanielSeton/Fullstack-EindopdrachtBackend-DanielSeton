@@ -1,7 +1,8 @@
 package com.eindopdracht.DJCorner.dtos;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDate;
 
@@ -10,10 +11,12 @@ public class ShowRequestDto {
     private String name;
     @NotBlank
     private String location;
-    @NotEmpty
+    @NotNull
     private LocalDate date;
+    @URL
     @NotBlank
     private String website;
+    @URL
     private String ticketSite;
 
     public String getName() {

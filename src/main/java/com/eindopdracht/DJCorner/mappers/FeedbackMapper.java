@@ -3,7 +3,9 @@ package com.eindopdracht.DJCorner.mappers;
 import com.eindopdracht.DJCorner.dtos.FeedbackRequestDto;
 import com.eindopdracht.DJCorner.dtos.FeedbackResponseDto;
 import com.eindopdracht.DJCorner.models.Feedback;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FeedbackMapper {
 
     public static Feedback toEntity(FeedbackRequestDto feedbackRequestDto) {

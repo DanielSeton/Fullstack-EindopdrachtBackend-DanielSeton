@@ -12,6 +12,7 @@ import com.eindopdracht.DJCorner.services.UserService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SubmissionMapper {
@@ -44,7 +45,7 @@ public class SubmissionMapper {
         submission.setTags(tagObjects);
 
         if (submissionRequestDto.getUserId() != null) {
-            User user = userService.getSingleUser(submissionRequestDto.getUserId());
+            User user = userService.findUserById(submissionRequestDto.getUserId());
             submission.setUser(user);
         }
 
@@ -94,16 +95,13 @@ public class SubmissionMapper {
 
     public void updateEntity(Submission submission, SubmissionRequestDto submissionRequestDto) {
         submission.setTitle(submissionRequestDto.getTitle());
-        submission.setArtistName(submissionRequestDto.getArtistName());
         submission.setBpm(submissionRequestDto.getBpm());
-        submission.setMusicFileName(submissionRequestDto.getMusicFileName());
-        submission.setMusicFileType(submissionRequestDto.getMusicFileType());
 
         if (submissionRequestDto.getTags() != null) {
             List<Tag> tagObjects = submissionRequestDto.getTags()
                     .stream()
                     .map(tagService::findOrCreateByName)
-                    .toList();
+                    .collect(Collectors.toList());
             submission.setTags(tagObjects);
         }
     }
@@ -127,7 +125,7 @@ public class SubmissionMapper {
         if (submissionRequestDto.getTags() != null) {
             List<Tag> tagObjects = submissionRequestDto.getTags().stream()
                     .map(tagService::findOrCreateByName)
-                    .toList();
+                    .collect(Collectors.toList());
             submission.setTags(tagObjects);
         }
     }

@@ -10,16 +10,16 @@ public class UserRequestDto {
 
     @NotBlank
     @Size(min = 3, max = 15)
-    public String username;
+    private String username;
 
     @Email
-    public String email;
+    private String email;
 
     @NotBlank
     @Size(min = 6, max = 25)
-    public String password;
+    private String password;
 
-    public String role;
+    private String role;
 
     public String getUsername() {
         return username;

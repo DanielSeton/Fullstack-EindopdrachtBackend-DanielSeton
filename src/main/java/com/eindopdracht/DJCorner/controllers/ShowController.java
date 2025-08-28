@@ -1,5 +1,6 @@
 package com.eindopdracht.DJCorner.controllers;
 
+import com.eindopdracht.DJCorner.dtos.ShowPatchRequestDto;
 import com.eindopdracht.DJCorner.dtos.ShowRequestDto;
 import com.eindopdracht.DJCorner.dtos.ShowResponseDto;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
@@ -14,26 +15,49 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/shows")
 public class ShowController {
 
     private final ShowService showService;
+    private final ShowRepository showRepository;
 
-    public ShowController(ShowService showService) {
+    public ShowController(ShowService showService, ShowRepository showRepository) {
         this.showService = showService;
+        this.showRepository = showRepository;
     }
 
     @GetMapping
     public ResponseEntity<List<ShowResponseDto>> getAllShows() {
-        return ResponseEntity.ok(showService.getAllShows());
+        return ResponseEntity.ok(showService.getShows());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ShowResponseDto> getShowById(@PathVariable Long id) {
-        return ResponseEntity.ok(ShowMapper.toResponseDto(this.showService.getSingleShow(id)));
+        return ResponseEntity.ok(ShowMapper.toResponseDto(showService.getShowById(id)));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<ShowResponseDto>> filterShows(
+            @RequestParam(required = false) LocalDate before,
+            @RequestParam(required = false) LocalDate after) {
+
+        List<Show> shows;
+
+        if (before != null) {
+            shows = showRepository.findByDateBefore(before);
+        } else if (after != null) {
+            shows = showRepository.findByDateAfter(after);
+        } else {
+            shows = showRepository.findAll();
+        }
+
+        List<ShowResponseDto> result = shows.stream()
+                .map(ShowMapper::toResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(result);
     }
 
 
@@ -64,9 +88,9 @@ public class ShowController {
         return ResponseEntity.ok(showResponseDto);
     }
 
-    @PatchMapping
-    public ResponseEntity<ShowResponseDto> patchShow (@PathVariable Long id, @Valid @RequestBody ShowRequestDto showRequestDto) {
-        ShowResponseDto updatedShow = showService.patchShow(id, showRequestDto);
+    @PatchMapping("/{id}")
+    public ResponseEntity<ShowResponseDto> patchShow (@PathVariable Long id, @Valid @RequestBody ShowPatchRequestDto showPatchRequestDto) {
+        ShowResponseDto updatedShow = showService.patchShow(id, showPatchRequestDto);
 
         return ResponseEntity.ok(updatedShow);
     }

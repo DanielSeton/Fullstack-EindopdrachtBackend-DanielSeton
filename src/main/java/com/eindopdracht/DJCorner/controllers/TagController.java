@@ -24,8 +24,8 @@ public class TagController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TagResponseDto>> getAllTags() {
-        return ResponseEntity.ok(tagService.getAllTags());
+    public ResponseEntity<List<TagResponseDto>> getTags() {
+        return ResponseEntity.ok(tagService.getTags());
     }
 
     @GetMapping("/{id}")

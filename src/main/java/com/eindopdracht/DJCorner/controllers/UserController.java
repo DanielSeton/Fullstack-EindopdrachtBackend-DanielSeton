@@ -6,9 +6,11 @@ import com.eindopdracht.DJCorner.dtos.UserResponseDto;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
 import com.eindopdracht.DJCorner.mappers.UserMapper;
 import com.eindopdracht.DJCorner.models.User;
+import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -31,8 +33,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserByID(@PathVariable Long id) {
-        return ResponseEntity.ok(UserMapper.toResponseDto(this.userService.getSingleUser(id)));
+    public ResponseEntity<UserResponseDto> getUserByID(
+            @PathVariable Long id,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+        UserResponseDto user = userService.getUserById(id, userDetails);
+
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/username/{username}")

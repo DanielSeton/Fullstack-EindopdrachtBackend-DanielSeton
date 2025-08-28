@@ -3,7 +3,9 @@ package com.eindopdracht.DJCorner.mappers;
 import com.eindopdracht.DJCorner.dtos.UserRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserResponseDto;
 import com.eindopdracht.DJCorner.models.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
 
     public static User toEntity(UserRequestDto userRequestDto) {
@@ -31,10 +33,10 @@ public class UserMapper {
     public static UserResponseDto toResponseDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
 
-        userResponseDto.id = user.getId();
-        userResponseDto.username = user.getUsername();
-        userResponseDto.email = user.getEmail();
-        userResponseDto.role = user.getRole();
+        userResponseDto.setId(user.getId());
+        userResponseDto.setUsername(user.getUsername());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setRole(user.getRole());
 
         return userResponseDto;
     }
