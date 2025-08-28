@@ -1,6 +1,7 @@
 package com.eindopdracht.DJCorner.controllers;
 
 
+import com.eindopdracht.DJCorner.dtos.UserUpdateRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserRequestDto;
 import com.eindopdracht.DJCorner.dtos.UserResponseDto;
 import com.eindopdracht.DJCorner.helpers.UriHelper;
@@ -27,9 +28,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDto>> getUsers(@AuthenticationPrincipal MyUserDetails userDetails) {
 
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(userService.getUsers(userDetails));
     }
 
     @GetMapping("/{id}")
@@ -42,8 +43,13 @@ public class UserController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<UserResponseDto> getUserByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(UserMapper.toResponseDto(this.userService.getUserByUsername(username)));
+    public ResponseEntity<UserResponseDto> getUserByUsername(
+            @PathVariable String username,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+
+        UserResponseDto user = userService.getUserByUsername(username, userDetails);
+
+        return ResponseEntity.ok(user);
     }
 
 
@@ -71,7 +77,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
 
-        userService.deleteSingleUser(id);
+        userService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -79,9 +85,12 @@ public class UserController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequestDto userUpdateRequestDto,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
 
-        UserResponseDto updatedUser = userService.updateUser(id, userRequestDto);
+        UserResponseDto updatedUser = userService.updateUser(id, userUpdateRequestDto, userDetails);
 
         return ResponseEntity.ok(updatedUser);
     }
@@ -89,8 +98,11 @@ public class UserController {
 
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDto> patchUser(@PathVariable Long id, @RequestBody UserRequestDto userRequestDto) {
-        UserResponseDto updatedUser = userService.patchUser(id, userRequestDto);
+    public ResponseEntity<UserResponseDto> patchUser(
+            @PathVariable Long id,
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto,
+            @AuthenticationPrincipal MyUserDetails userDetails) {
+        UserResponseDto updatedUser = userService.patchUser(id, userUpdateRequestDto, userDetails);
         return ResponseEntity.ok(updatedUser);
     }
 }
