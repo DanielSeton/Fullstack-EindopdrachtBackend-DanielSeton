@@ -1,6 +1,5 @@
 package com.eindopdracht.DJCorner.services;
 
-import com.eindopdracht.DJCorner.dtos.FeedbackRequestDto;
 import com.eindopdracht.DJCorner.dtos.FeedbackResponseDto;
 import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
@@ -36,7 +35,7 @@ public class FeedbackService {
         return feedbackResponseDtoList;
     }
 
-    public Feedback getFeedback(Long id) {
+    public Feedback getFeedbackById(Long id) {
         return feedbackRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback with id: " + id + " not found"));
     }
 
