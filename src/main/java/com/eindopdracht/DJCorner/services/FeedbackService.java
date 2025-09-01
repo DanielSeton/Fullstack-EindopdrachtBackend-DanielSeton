@@ -25,10 +25,6 @@ public class FeedbackService {
         this.submissionRepository = submissionRepository;
     }
 
-    public Feedback createFeedback(FeedbackRequestDto feedbackRequestDto) {
-        return feedbackRepository.save(FeedbackMapper.toEntity(feedbackRequestDto));
-    }
-
     public List<FeedbackResponseDto> getFeedback() {
         List<Feedback> feedbackList = feedbackRepository.findAll();
         List<FeedbackResponseDto> feedbackResponseDtoList = new ArrayList<>();
