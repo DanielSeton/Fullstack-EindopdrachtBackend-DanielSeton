@@ -67,34 +67,6 @@ public class SubmissionController {
         return new ResponseEntity<>(audioFile, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/file")
-    public ResponseEntity<byte[]> downloadAudioFile(@PathVariable Long id) {
-        Submission submission = submissionService.getSubmissionById(id);
-
-        byte[] audioFile = submission.getMusicFile();
-        if (audioFile == null || audioFile.length == 0) {
-            return ResponseEntity.noContent().build();
-        }
-
-        String contentType = submission.getMusicFileType();
-        if (contentType == null || contentType.isBlank()) {
-            contentType = "application/octet-stream";
-        }
-
-        String fileName = submission.getMusicFileName();
-        if (fileName == null || fileName.isBlank()) {
-            fileName = "audio_file";
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(contentType));
-        headers.setContentDisposition(ContentDisposition.attachment()
-                .filename(fileName)
-                .build());
-
-        return new ResponseEntity<>(audioFile, headers, HttpStatus.OK);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<SubmissionResponseDto> getSubmissionById(@PathVariable Long id) {
         return ResponseEntity.ok(SubmissionMapper.toSubmissionResponseDto(this.submissionService.getSubmissionById(id)));
