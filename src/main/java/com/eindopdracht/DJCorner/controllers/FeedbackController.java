@@ -6,7 +6,6 @@ import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.services.FeedbackService;
 import com.eindopdracht.DJCorner.services.SubmissionService;
-import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +31,8 @@ public class FeedbackController {
 
 
     @GetMapping
-    public ResponseEntity <List<FeedbackResponseDto>> getAllFeedbacks() {
-        return ResponseEntity.ok(feedbackService.getAllFeedbacks());
+    public ResponseEntity <List<FeedbackResponseDto>> getFeedback() {
+        return ResponseEntity.ok(feedbackService.getFeedback());
     }
 
     @GetMapping("/{id}")

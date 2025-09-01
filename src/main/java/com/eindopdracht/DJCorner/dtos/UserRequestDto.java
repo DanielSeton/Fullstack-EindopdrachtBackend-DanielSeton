@@ -1,7 +1,5 @@
 package com.eindopdracht.DJCorner.dtos;
 
-
-import com.eindopdracht.DJCorner.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

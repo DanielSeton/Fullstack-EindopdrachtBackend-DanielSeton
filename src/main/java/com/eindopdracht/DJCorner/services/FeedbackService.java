@@ -9,7 +9,6 @@ import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.FeedbackRepository;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class FeedbackService {
         return feedbackRepository.save(FeedbackMapper.toEntity(feedbackRequestDto));
     }
 
-    public List<FeedbackResponseDto> getAllFeedbacks() {
+    public List<FeedbackResponseDto> getFeedback() {
         List<Feedback> feedbackList = feedbackRepository.findAll();
         List<FeedbackResponseDto> feedbackResponseDtoList = new ArrayList<>();
 

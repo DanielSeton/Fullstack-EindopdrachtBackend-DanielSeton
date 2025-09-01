@@ -1,6 +1,5 @@
 package com.eindopdracht.DJCorner.security;
 
-import com.eindopdracht.DJCorner.enums.Role;
 import com.eindopdracht.DJCorner.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

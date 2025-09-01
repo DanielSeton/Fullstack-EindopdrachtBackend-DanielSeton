@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class SubmissionService {
@@ -61,11 +59,11 @@ public class SubmissionService {
         return submissionRepository.save(submission);
     }
 
-    public Submission getSingleSubmission(Long id) {
-        return this.submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
+    public Submission getSubmissionById(Long id) {
+        return submissionRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Submission with id: " + id + " not found"));
     }
 
-    public Page<SubmissionResponseDto> getAllSubmissions(Pageable pageable) {
+    public Page<SubmissionResponseDto> getSubmissions(Pageable pageable) {
         Page<Submission> submissionsPage = submissionRepository.findAll(pageable);
 
         return submissionsPage.map(SubmissionMapper::toSubmissionResponseDto);

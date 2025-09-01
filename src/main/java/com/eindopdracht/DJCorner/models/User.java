@@ -1,7 +1,6 @@
 package com.eindopdracht.DJCorner.models;
 
 
-import com.eindopdracht.DJCorner.enums.Role;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
