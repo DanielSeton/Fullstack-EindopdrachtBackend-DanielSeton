@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
-    List<Submission> findByUser(User user);
     Optional<Submission> findByFeedbackId(Long feedbackId);
 
     Page<Submission> findAll(Pageable pageable);

@@ -12,7 +12,6 @@ import com.eindopdracht.DJCorner.security.MyUserDetails;
 import com.eindopdracht.DJCorner.services.SubmissionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
@@ -39,7 +38,7 @@ public class SubmissionController {
         @RequestParam (defaultValue = "0") int page,
         @RequestParam (defaultValue = "15") int size
     ) {
-        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getAllSubmissions(PageRequest.of(page, size));
+        Page<SubmissionResponseDto> pagedSubmissions = submissionService.getSubmissions(PageRequest.of(page, size));
         return ResponseEntity.ok(pagedSubmissions);
     }
 
@@ -55,7 +54,7 @@ public class SubmissionController {
 
     @GetMapping("/{id}/audio")
     public ResponseEntity<byte[]> getAudioFile(@PathVariable Long id) {
-        Submission submission = submissionService.getSingleSubmission(id);
+        Submission submission = submissionService.getSubmissionById(id);
 
         byte[] audioFile = submission.getMusicFile();
 
@@ -70,7 +69,7 @@ public class SubmissionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SubmissionResponseDto> getSubmissionById(@PathVariable Long id) {
-        return ResponseEntity.ok(SubmissionMapper.toSubmissionResponseDto(this.submissionService.getSingleSubmission(id)));
+        return ResponseEntity.ok(SubmissionMapper.toSubmissionResponseDto(this.submissionService.getSubmissionById(id)));
     }
 
     @GetMapping("/status/{status}")

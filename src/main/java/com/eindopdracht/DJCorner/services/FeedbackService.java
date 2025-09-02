@@ -1,6 +1,5 @@
 package com.eindopdracht.DJCorner.services;
 
-import com.eindopdracht.DJCorner.dtos.FeedbackRequestDto;
 import com.eindopdracht.DJCorner.dtos.FeedbackResponseDto;
 import com.eindopdracht.DJCorner.enums.Status;
 import com.eindopdracht.DJCorner.exceptions.ResourceNotFoundException;
@@ -9,7 +8,6 @@ import com.eindopdracht.DJCorner.models.Feedback;
 import com.eindopdracht.DJCorner.models.Submission;
 import com.eindopdracht.DJCorner.repositories.FeedbackRepository;
 import com.eindopdracht.DJCorner.repositories.SubmissionRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,11 +24,7 @@ public class FeedbackService {
         this.submissionRepository = submissionRepository;
     }
 
-    public Feedback createFeedback(FeedbackRequestDto feedbackRequestDto) {
-        return feedbackRepository.save(FeedbackMapper.toEntity(feedbackRequestDto));
-    }
-
-    public List<FeedbackResponseDto> getAllFeedbacks() {
+    public List<FeedbackResponseDto> getFeedback() {
         List<Feedback> feedbackList = feedbackRepository.findAll();
         List<FeedbackResponseDto> feedbackResponseDtoList = new ArrayList<>();
 
@@ -41,7 +35,7 @@ public class FeedbackService {
         return feedbackResponseDtoList;
     }
 
-    public Feedback getFeedback(Long id) {
+    public Feedback getFeedbackById(Long id) {
         return feedbackRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback with id: " + id + " not found"));
     }
 
