@@ -53,10 +53,11 @@ Geef de database de naam **“DJCorner-database”** en verander de owner naar *
 ### Stap 6
 Open IntelliJ en open de **'application.properties'** in de folder **‘src > main > resources’**.
 
-Vul je eigen server, username en password in:
-spring.datasource.url=jdbc:postgresql://localhost:5432/DJCorner-Database
-spring.datasource.username=postgres
-spring.datasource.password=*VUL HIER JE EIGEN PGADMIN PASSWORD IN*
+Vul je eigen username en password in:
+
+![Instellingen van de properties](images/Application_Instellingen.png)
+
+*Als je een andere naam hebt gebruikt voor je server, moet je die ook hier invullen**
 
 ### Stap 7
 Wanneer je nu de applicatie opstart, zou de database gevuld moeten zijn met nieuwe tabellen. Voor de zekerheid, open je nieuwe database en ga naar **‘Schemas’** en klik er op met je rechtermuisknop en klik hierna op **‘Refresh’**.

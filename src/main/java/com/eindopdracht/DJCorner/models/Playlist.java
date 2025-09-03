@@ -2,7 +2,6 @@ package com.eindopdracht.DJCorner.models;
 
 import jakarta.persistence.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
