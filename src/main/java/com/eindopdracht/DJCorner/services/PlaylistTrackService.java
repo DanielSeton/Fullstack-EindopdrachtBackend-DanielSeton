@@ -32,6 +32,7 @@ public class PlaylistTrackService {
                 .orElseThrow(() -> new ResourceNotFoundException("Track with id: " + id + " not found"));
     }
 
+    @Transactional
     public void deleteTrack(Long id) {
         Optional<PlaylistTrack> playlistTrack = playlistTrackRepository.findById(id);
 
@@ -39,7 +40,15 @@ public class PlaylistTrackService {
             throw new ResourceNotFoundException("Track with id: " + id + " not found");
         }
 
-        playlistTrackRepository.deleteById(id);
+        PlaylistTrack track = playlistTrack.get();
+
+        for (Playlist playlist : track.getPlaylists()) {
+            playlist.getTracks().remove(track);
+        }
+
+        track.getPlaylists().clear();
+
+        playlistTrackRepository.delete(track);
     }
 
     @Transactional
