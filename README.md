@@ -1,5 +1,5 @@
 # Inleiding
-Deze installatiehandleiding is geschreven voor de backend van de eindopdracht voor de NOVI Full Stack Developer leerlijn. De backend van deze applicatie is ontwikkeld met Spring Boot en vormt de ruggengraat van het platform. Deze REST API maakt het mogelijk om muziekdemo’s te beheren, gebruikers te authenticeren/autoriseren en feedback te verwerken en bijhouden. Deze backend is ontworpen om te integreren met een React gebaseerde frontend.
+Deze installatiehandleiding is geschreven voor de backend van de eindopdracht voor de NOVI Full Stack Developer leerlijn. De backend van deze applicatie is ontwikkeld met Spring Boot en vormt de ruggengraat van het platform. Deze REST API maakt het mogelijk om muziekdemo’s te beheren, gebruikers te authentiseren/autoriseren en feedback te verwerken en bijhouden. Deze backend is ontworpen om te integreren met een React gebaseerde frontend.
 
 De kernfunctie voor deze applicatie zijn:
 -	Het aanmaken van een account en daarmee kunnen inloggen
