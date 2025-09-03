@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.eindopdracht</groupId>
 	<artifactId>DJCorner</artifactId>
-	<version>0.0.1</version>
+	<version>0.1.0</version>
 	<name>DJCorner</name>
 	<description>Backend gedeelte voor de eindopdracht voor de Fullstack bootcamp 2025-02</description>
 	<url/>

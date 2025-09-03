@@ -127,6 +127,13 @@ public class PlaylistController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/tracks/{trackId}")
+    public ResponseEntity<PlaylistTrackResponseDto> removeTrackFromPlaylist(@PathVariable Long trackId) {
+        playlistTrackService.deleteTrack(trackId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<PlaylistResponseDto> updatePlaylist(@PathVariable Long id, @RequestBody PlaylistRequestDto playlistRequestDto) {
         PlaylistResponseDto playlistResponseDto = playlistService.updatePlaylist(id, playlistRequestDto);
